@@ -1,0 +1,47 @@
+export const metadata = {
+  title: "クイックスタート",
+  description: "アシスタントを Steve に接続し、サインインして、最初の質問をします。所要時間は約 5 分です。",
+};
+
+<Meta eyebrow="はじめに" {...metadata} />
+
+このガイドでは Claude を使います。ほかのアシスタントについては、[接続ガイド](/ja/docs/connect/claude)をご覧ください。
+
+<Callout type="note" title="始める前に">
+  Steve アカウントと、有料の Claude プラン（Pro、Max、Team、Enterprise）が必要です。Team または Enterprise では、先にオーナーがカスタムコネクタを有効にする必要があります。
+</Callout>
+
+<Steps>
+  <Step title="コネクタを開く">Claude デスクトップアプリでは **Settings → Connectors** を開きます。claude.ai では **Settings → Customize → Connectors** を開きます。Claude の画面は英語表示の場合があります。</Step>
+  <Step title="カスタムコネクタを追加する">**Add custom connector** をクリックします。名前は自由です。たとえば Steve にします。</Step>
+  <Step title="アドレスを貼り付ける">リモート MCP サーバーとして `https://app.hiresteve.ai/api/agent/mcp` を貼り付けます。**Client ID** と **Client Secret** は空のままにします。</Step>
+  <Step title="警告を受け入れる">Claude に、未確認のサードパーティ製コネクタだと表示されます。Anthropic が作っていないコネクタでは、これが普通です。</Step>
+  <Step title="Steve で承認する">ブラウザのウィンドウが開きます。求められたら Steve にサインインします。組織を選び、**承認する** をクリックします。</Step>
+  <Step title="ツールを許可する">Claude はツールごとに許可を求めます。47 個を 1 つずつ承認しなくて済むよう、最初に **Always allow** を選びます。</Step>
+</Steps>
+
+{/* screenshot: Claude Connectors page with the Add custom connector dialog */}
+{/* screenshot: the Steve "Approve this connection" page */}
+
+## 最初の質問をする
+
+まだプロジェクトがない場合は、ここから始めます。
+
+<Prompt lang="ja">Steve を使って、競合の追跡を始めてください。私の会社は acme.com です。</Prompt>
+
+Steve があなたの Web サイトを読み取り、プロジェクトの下書きを作ります。下書きを確認し、問題なければ「はい」と答えます。その後、Steve が競合を探し、修正できる一覧を表示します。
+
+<Callout type="tip" title="数分ほどお待ちください">
+  新しい競合はバックグラウンドで調査されます。最初にニュースが表示されます。ほかの情報源は、数分から数時間かかることがあります。
+</Callout>
+
+競合が登録されたら、次のように質問してみましょう。
+
+<Prompt lang="ja">競合の最新ニュースを教えてください。</Prompt>
+<Prompt lang="ja">Steve で追跡しているのはどこですか？</Prompt>
+<Prompt lang="ja">競合が配信している Meta 広告を見せてください。</Prompt>
+
+<Cards>
+  <Card title="Steve の答え方" href="/ja/docs/getting-started/how-it-works">回答に出典が付く理由と、空の結果の意味。</Card>
+  <Card title="うまくいかないときは" href="/ja/docs/account/troubleshooting">すべてのエラーと対処法。</Card>
+</Cards>

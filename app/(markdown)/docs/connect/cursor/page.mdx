@@ -1,0 +1,39 @@
+export const metadata = {
+  title: "Cursor",
+  description: "Add Steve to Cursor as a remote MCP server with OAuth sign-in.",
+};
+
+<Meta eyebrow="Connect your assistant" {...metadata} />
+
+Steve's sign-in accepts Cursor's return addresses, so you can connect it. Cursor supports remote MCP servers with OAuth and registers itself with Steve.
+
+<Callout type="warning" title="Cursor adds remote servers in a settings file">
+  Cursor's documentation describes one way to add your own remote server: an MCP settings file with the server address. Cursor's Customize page then lets you turn the server on or off. The exact lines to put in the file are in the [README on GitHub](https://github.com/trissino-ai/steve-mcp#cursor). This site does not show code.
+</Callout>
+
+<Steps>
+  <Step title="Open the MCP settings file">Use the file for one project (a folder named .cursor inside it) or for all projects (the same folder in your home folder). Create it if it does not exist.</Step>
+  <Step title="Add Steve">Add a server named steve. Give it a **url** with `https://app.hiresteve.ai/api/agent/mcp`. Use the README for the exact lines. Do not add a client ID, a secret or a token.</Step>
+  <Step title="Restart Cursor">Cursor must restart to read the file.</Step>
+  <Step title="Turn Steve on">In the sidebar, open **Customize**, then **MCPs**. Switch **steve** on.</Step>
+  <Step title="Sign in">Cursor opens your browser. Sign in to Steve, pick your organization and click **Approve**.</Step>
+</Steps>
+
+{/* screenshot: Cursor Customize → MCPs showing steve */}
+
+Then ask in the Cursor chat:
+
+<Prompt>Use Steve to list my projects.</Prompt>
+
+<Callout type="note" title="Teams">
+  On a Cursor Team plan, an admin can add shared servers in the Cursor dashboard. If your team uses an MCP allowlist, the Steve address must be on it.
+</Callout>
+
+<Callout type="note" title="Not tested by the Steve team">
+  Steve's app has no Cursor instructions yet. If a menu name differs, follow Cursor's own current documentation.
+</Callout>
+
+<Cards>
+  <Card title="Sign-in and permissions" href="/docs/account/sign-in">What you approve.</Card>
+  <Card title="Troubleshooting" href="/docs/account/troubleshooting">Errors and fixes.</Card>
+</Cards>

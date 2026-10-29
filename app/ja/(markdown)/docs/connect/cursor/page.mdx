@@ -1,0 +1,39 @@
+export const metadata = {
+  title: "Cursor",
+  description: "OAuth サインインを使って、Cursor にリモート MCP サーバーとして Steve を追加します。",
+};
+
+<Meta eyebrow="アシスタントを接続" {...metadata} />
+
+Steve のサインインは Cursor の戻り先アドレスに対応しているため、接続できます。Cursor は OAuth を使うリモート MCP サーバーに対応しており、Steve には自動で登録されます。メニュー名は英語表示のまま記載しています。
+
+<Callout type="warning" title="Cursor ではリモートサーバーを設定ファイルで追加します">
+  Cursor のドキュメントでは、自分のリモートサーバーを追加する方法として、サーバーのアドレスを書いた MCP 設定ファイルを使うと説明されています。その後、Cursor の Customize ページでサーバーのオン・オフを切り替えられます。ファイルに書く正確な内容は、[GitHub の README](https://github.com/trissino-ai/steve-mcp#cursor) にあります。このサイトにはコードを掲載しません。
+</Callout>
+
+<Steps>
+  <Step title="MCP 設定ファイルを開く">1 つのプロジェクト用（その中の .cursor フォルダ）か、すべてのプロジェクト用（ホームフォルダ内の同じ名前のフォルダ）のファイルを使います。ファイルがなければ作成します。</Step>
+  <Step title="Steve を追加する">steve という名前のサーバーを追加します。**url** に `https://app.hiresteve.ai/api/agent/mcp` を指定します。正確な記述は README を参照してください。クライアント ID、シークレット、トークンは追加しないでください。</Step>
+  <Step title="Cursor を再起動する">ファイルを読み込むため、Cursor の再起動が必要です。</Step>
+  <Step title="Steve をオンにする">サイドバーで **Customize** を開き、**MCPs** を選びます。**steve** をオンにします。</Step>
+  <Step title="サインインする">Cursor がブラウザを開きます。Steve にサインインし、組織を選んで **承認する** をクリックします。</Step>
+</Steps>
+
+{/* screenshot: Cursor Customize → MCPs showing steve */}
+
+そのあと、Cursor のチャットで次のように聞きます。
+
+<Prompt lang="ja">Steve を使って、私のプロジェクトを一覧表示してください。</Prompt>
+
+<Callout type="note" title="チームで使う場合">
+  Cursor の Team プランでは、管理者が Cursor のダッシュボードで共有サーバーを追加できます。チームで MCP の許可リストを使っている場合は、Steve のアドレスをリストに加える必要があります。
+</Callout>
+
+<Callout type="note" title="Steve チームでは未検証です">
+  Steve のアプリには、まだ Cursor 向けの案内がありません。メニュー名が異なる場合は、Cursor の最新のドキュメントに従ってください。
+</Callout>
+
+<Cards>
+  <Card title="サインインと権限" href="/ja/docs/account/sign-in">承認する内容。</Card>
+  <Card title="トラブルシューティング" href="/ja/docs/account/troubleshooting">エラーと対処法。</Card>
+</Cards>

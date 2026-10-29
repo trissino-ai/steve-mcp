@@ -1,0 +1,104 @@
+export const metadata = {
+  title: "Web サイトの追跡",
+  description: "料金ページなど、競合の特定のページを監視して、変更を確認します。",
+};
+
+<Meta eyebrow="ツール" {...metadata} />
+
+料金ページなど、重要なページを選ぶと、変更があったときに Steve が知らせます。ページの内容はふだんの言葉で伝えるだけで、Steve が正しいアドレスを見つけます。
+
+<Callout type="warning" title="MCP のエントリープランには含まれません">
+  ここにある 6 つのツールはすべて、Web サイトの追跡機能が必要です。この機能がないプランでは、ツールは実行を拒否し、アシスタントがアップグレード先のプランを伝えます。`get_website_changes` による Web サイトの変更の読み取りは使えますが、結果は空になります。
+</Callout>
+
+## こんなふうに頼んでみましょう
+
+<Prompt lang="ja">Klue のサイトをクロールして、監視するページを選べるようにして。</Prompt>
+<Prompt lang="ja">Klue の料金ページの変更を監視して。</Prompt>
+<Prompt lang="ja">いま監視している競合のページはどれ？</Prompt>
+<Prompt lang="ja">Klue の料金ページは何が変わった？</Prompt>
+<Prompt lang="ja">Klue のページを今すぐもう一度チェックして。</Prompt>
+
+## 流れ
+
+<Steps>
+  <Step title="クロール">Steve が競合のサイトをクロールして、どんなページがあるかを調べます。5 分から 15 分かかります。この時点では、まだ何も追跡されません。</Step>
+  <Step title="ページを選ぶ">監視したい内容を伝えます。Steve が、条件に合うページを提案します。</Step>
+  <Step title="確認する">アシスタントがページを表示します。「はい」と答えるか、変更を頼みます。</Step>
+  <Step title="追跡を開始">Steve がページの監視を始めます。最初の実行では、基準となる状態を記録するだけです。変更は、次の実行から表示されます。</Step>
+  <Step title="変更を読む">トラッカーは、毎週月曜日の朝（UTC）に更新されます。今すぐ実行することもできます。</Step>
+</Steps>
+
+## 競合のサイトをクロールする
+
+<ToolBadge name="discover_website_pages" bucket="write" lang="ja" />
+
+バックグラウンドでクロールを開始し、競合にどんなページがあるかを Steve が把握できるようにします。
+
+<Facts>
+  <Fact label="指定できること">競合。追跡中の競合である必要があります。</Fact>
+  <Fact label="取得できる内容">クロールが始まったかどうか、所要時間の目安、Steve がすでに把握していたページ数。クロールがすでに実行中の場合は、その旨が伝えられます。</Fact>
+</Facts>
+
+クロールの状況を確認するツールはありません。完了するころに、もう一度ページを選ぶようアシスタントに頼んでください。
+
+## 監視するページを選ぶ
+
+<ToolBadge name="prepare_track_website_pages" bucket="read" lang="ja" />
+
+あなたの文章を、クロール済みのページの実際のアドレスに変換します。何も保存しません。
+
+<Facts>
+  <Fact label="指定できること">競合と、監視したい内容（自分の言葉で、500 文字まで）。</Fact>
+  <Fact label="取得できる内容">準備完了（提案されたページ付き）、先にクロールが必要、一致なし、入力が必要のいずれか。あわせて、その判断の理由も返ります。</Fact>
+</Facts>
+
+## ページの監視を開始する
+
+<ToolBadge name="track_website_pages" bucket="write" lang="ja" />
+
+確認したページのトラッカーを作成し、最初の実行をキューに入れます。
+
+<Facts>
+  <Fact label="指定できること">競合と、ページ。ページは公開されていて、競合自身のサイトにある必要があります。</Fact>
+  <Fact label="取得できる内容">追跡中のページ、最初の実行がキューに入ったかどうか、更新の頻度。最初の実行は基準の記録です。</Fact>
+</Facts>
+
+まったく同じトラッカーがすでにある場合は、新しく作成されず、その旨が伝えられます。
+
+## Web サイトのトラッカーを一覧表示する
+
+<ToolBadge name="list_website_tracking_requests" bucket="read" lang="ja" />
+
+プロジェクト内のトラッカーと、それぞれが監視している内容を表示します。
+
+<Facts>
+  <Fact label="指定できること">競合（任意）と、表示件数。</Fact>
+  <Fact label="取得できる内容">トラッカーごとに、競合、監視している内容、ページ、有効かどうか、最後に実行した日時。</Fact>
+</Facts>
+
+## 追跡中のページの変更を読み取る
+
+<ToolBadge name="get_website_tracking_status" bucket="read" lang="ja" />
+
+トラッカーの最新の実行と、見つかった内容を表示します。
+
+<Facts>
+  <Fact label="指定できること">トラッカー。</Fact>
+  <Fact label="取得できる内容">キュー待ち、基準を記録済み、変更なし、変更ありのいずれか。変更ごとに、ページ、説明、種類、変更前と変更後の内容、スクリーンショット。</Fact>
+</Facts>
+
+<Callout type="note">
+  スクリーンショットのリンクは、約 1 時間で期限切れになります。新しいリンクが必要なときは、もう一度頼んでください。
+</Callout>
+
+## Web サイトのトラッカーを今すぐ再実行する
+
+<ToolBadge name="rerun_website_tracking" bucket="write" lang="ja" />
+
+毎週の実行を待たずに、トラッカーを今すぐ再実行します。すでに実行中の場合は、新しい実行は始まりません。結果は、状況の確認で見られます。
+
+<Cards>
+  <Card title="ニュース・レビュー・投稿" href="/ja/docs/tools/intelligence">get_website_changes で変更を読み取ります。</Card>
+  <Card title="プランと上限" href="/ja/docs/account/plans-and-limits">この機能を含むプランを確認します。</Card>
+</Cards>

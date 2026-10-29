@@ -1,0 +1,104 @@
+export const metadata = {
+  title: "Website tracking",
+  description: "Watch specific competitor pages, like pricing, and see what changed.",
+};
+
+<Meta eyebrow="Tools" {...metadata} />
+
+Pick the pages that matter, like a pricing page, and Steve tells you when they change. You describe the pages in plain words. Steve finds the right addresses.
+
+<Callout type="warning" title="Not in the entry MCP plan">
+  All six tools here need the Website tracking feature. On a plan without it, they refuse and the assistant names the plan to upgrade to. Reading website changes with `get_website_changes` still works, but comes back empty.
+</Callout>
+
+## Try asking
+
+<Prompt>Crawl Klue's website so we can pick pages to watch.</Prompt>
+<Prompt>Watch Klue's pricing page for changes.</Prompt>
+<Prompt>Which competitor pages am I watching?</Prompt>
+<Prompt>What changed on Klue's pricing page?</Prompt>
+<Prompt>Check Klue's pages again now.</Prompt>
+
+## The flow
+
+<Steps>
+  <Step title="Crawl">Steve crawls the competitor's site to learn which pages exist. This takes 5 to 15 minutes and tracks nothing yet.</Step>
+  <Step title="Pick pages">You describe what you want. Steve suggests matching pages.</Step>
+  <Step title="You confirm">The assistant shows the pages. Say yes, or ask for changes.</Step>
+  <Step title="Track">Steve starts watching them. The first run only records a starting point. Changes show from the next run.</Step>
+  <Step title="Read changes">Trackers refresh weekly, on Monday mornings UTC. You can run one now.</Step>
+</Steps>
+
+## Crawl a competitor site
+
+<ToolBadge name="discover_website_pages" bucket="write" />
+
+Starts a background crawl so Steve knows which pages a competitor has.
+
+<Facts>
+  <Fact label="You say">Which competitor. It must be tracked.</Fact>
+  <Fact label="You get">Whether the crawl started, a time estimate, and how many pages Steve already knew. If a crawl is already running, you are told.</Fact>
+</Facts>
+
+There is no status tool for the crawl. When it should be done, ask the assistant to pick pages again.
+
+## Pick pages to watch
+
+<ToolBadge name="prepare_track_website_pages" bucket="read" />
+
+Turns your sentence into real page addresses from the crawled pages. It saves nothing.
+
+<Facts>
+  <Fact label="You say">Which competitor, and what to watch in your own words (up to 500 characters).</Fact>
+  <Fact label="You get">Ready (with suggested pages), needs a crawl first, no match, or needs more input. Plus the reasoning.</Fact>
+</Facts>
+
+## Start watching pages
+
+<ToolBadge name="track_website_pages" bucket="write" />
+
+Creates the tracker for the pages you confirmed and queues the first run.
+
+<Facts>
+  <Fact label="You say">Which competitor and which pages. Pages must be public and on the competitor's own site.</Fact>
+  <Fact label="You get">The pages being tracked, whether the first run was queued, and how often it refreshes. The first run is a baseline.</Fact>
+</Facts>
+
+If an identical tracker exists, nothing new is created and you are told.
+
+## List website trackers
+
+<ToolBadge name="list_website_tracking_requests" bucket="read" />
+
+Lists the trackers in a project and what each one watches.
+
+<Facts>
+  <Fact label="You can say">A competitor (optional), and how many results.</Fact>
+  <Fact label="You get">For each tracker: the competitor, what it watches, the pages, whether it is active, and when it last ran.</Fact>
+</Facts>
+
+## Read what changed on tracked pages
+
+<ToolBadge name="get_website_tracking_status" bucket="read" />
+
+Shows the latest run of a tracker and what it found.
+
+<Facts>
+  <Fact label="You say">Which tracker.</Fact>
+  <Fact label="You get">Queued, baseline recorded, no changes, or changes found. For each change: the page, a description, the type, what it said before and after, and screenshots.</Fact>
+</Facts>
+
+<Callout type="note">
+  Screenshot links expire after about an hour. Ask again for fresh ones.
+</Callout>
+
+## Run a website tracker again now
+
+<ToolBadge name="rerun_website_tracking" bucket="write" />
+
+Re-runs a tracker now instead of waiting for the weekly run. If a run is already in progress, nothing new starts. Ask for the status to see the result.
+
+<Cards>
+  <Card title="News, reviews and posts" href="/docs/tools/intelligence">Read changes with get_website_changes.</Card>
+  <Card title="Plans and limits" href="/docs/account/plans-and-limits">See which plans include this.</Card>
+</Cards>

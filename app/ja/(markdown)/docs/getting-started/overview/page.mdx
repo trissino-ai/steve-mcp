@@ -1,0 +1,49 @@
+export const metadata = {
+  title: "Steve MCP とは",
+  description: "いつも使っている AI アシスタントを Steve に接続し、競合について普通の言葉で質問できます。すべての回答に出典と日付が付きます。",
+};
+
+<Meta eyebrow="はじめに" {...metadata} />
+
+**アシスタントを接続 → 競合について質問 → 出典付きの回答を受け取る。**
+
+Steve は競合のニュース、広告、SNS 投稿、Web サイトの変更を追跡します。Steve MCP を使うと、普段お使いの AI アシスタントがそのデータを読み取り、操作できるようになります。別のアプリを開く必要はありません。質問するだけです。
+
+<Prompt lang="ja">今週、競合は LinkedIn で何を投稿しましたか？</Prompt>
+
+## できること
+
+<Facts>
+  <Fact label="情報を読む">ニュース、レビュー、LinkedIn・X・Instagram の投稿、Google と Meta の広告、Web サイトの変更。</Fact>
+  <Fact label="追跡を設定する">プロジェクトの作成、競合の追加、SNS アカウントや Web ページの追跡。</Fact>
+  <Fact label="競合を探す">まだ追跡していない企業を Steve に探してもらいます。</Fact>
+  <Fact label="成果物を作る">レポートの実行、競合キャンバスの作成、バトルカードの書き直し。</Fact>
+  <Fact label="共有する">レポート、キャンバス、バトルカードをリンクとして公開します。あなたが許可したときだけです。</Fact>
+</Facts>
+
+Steve には **47 個のツール**があります。ツールを自分で呼び出す必要はありません。アシスタントが適切なものを選びます。詳しくは[47 個のツール一覧](/ja/docs/tools)をご覧ください。
+
+## 必要なもの
+
+- **Steve アカウント**。Steve MCP は Steve のプランに含まれています。詳しくは[プランと上限](/ja/docs/account/plans-and-limits)をご覧ください。
+- **リモート MCP サーバー**に対応したアシスタント。Claude、Claude Code、ChatGPT、Cursor、VS Code が使えます。
+- Steve のアドレス: `https://app.hiresteve.ai/api/agent/mcp`
+
+<Callout type="warning" title="Signals 組織は接続できません">
+  Signals タイプの組織は Steve MCP を利用できません。接続は、その旨のメッセージとともに拒否されます。
+</Callout>
+
+## 何が違うのか
+
+<Steps>
+  <Step title="回答はメモリではなくデータに基づく">アシスタントは、競合について学習済みの知識で答えないよう指示されています。Steve を呼び出すか、まだデータが収集されていないと伝えます。</Step>
+  <Step title="すべての項目に出典が付く">ニュース、投稿、広告のそれぞれに、リンクと日付が付きます。</Step>
+  <Step title="書き込む前に確認する">Steve はまず下書きを作ります。あなたが確認してから保存します。同意なしに公開されることはありません。</Step>
+</Steps>
+
+{/* screenshot: a Claude chat showing a Steve answer with sources */}
+
+<Cards>
+  <Card title="クイックスタート" href="/ja/docs/getting-started/quickstart">接続して、最初の質問をするまで約 5 分です。</Card>
+  <Card title="Steve の答え方" href="/ja/docs/getting-started/how-it-works">出典、次のステップ、変更の保存方法。</Card>
+</Cards>

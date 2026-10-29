@@ -1,0 +1,118 @@
+export const metadata = {
+  title: "Reports",
+  description: "Run a report from a template, schedule it, and share it only when you choose.",
+};
+
+<Meta eyebrow="Tools" {...metadata} />
+
+Reports are written analyses of your competitors, built from a template. You run one by asking. Reports are private until you ask to share. Checking a report never publishes it.
+
+<Callout type="note" title="Templates are made in the Steve app">
+  You cannot create a template through your assistant. If you have none, the assistant tells you to make one in the Steve app. The entry MCP plan has no report templates.
+</Callout>
+
+## Try asking
+
+<Prompt>What report templates do I have?</Prompt>
+<Prompt>Run my weekly competitor report.</Prompt>
+<Prompt>Is my report ready?</Prompt>
+<Prompt>Run the competitor report weekly and email me when it's done.</Prompt>
+<Prompt>Yes, give me a public link for the report.</Prompt>
+
+## The flow
+
+<Steps>
+  <Step title="Pick a template">The assistant lists your templates.</Step>
+  <Step title="Check first">It tells you what the report covers and about how long it takes. Nothing runs yet.</Step>
+  <Step title="You say yes">A run uses real compute and cannot be cancelled, so the assistant waits for your yes.</Step>
+  <Step title="Generate and check">The report builds in the background. Ask for status.</Step>
+  <Step title="Share, only if you ask">A finished report stays private. Ask for a link when you want one.</Step>
+</Steps>
+
+## List report templates
+
+<ToolBadge name="list_report_templates" bucket="read" />
+
+Lists the templates in a project.
+
+<Facts>
+  <Fact label="You get">Name, description, number of sections, current schedule, and whether it needs a survey or sales reps.</Fact>
+</Facts>
+
+## Check what a report run would do
+
+<ToolBadge name="prepare_generate_report" bucket="read" />
+
+A dry run. It checks every requirement and writes nothing.
+
+<Facts>
+  <Fact label="You say">Which template. A survey, only if a section reads win-loss survey data.</Fact>
+  <Fact label="You get">The sections, data sources, competitors and date range covered, and a time estimate.</Fact>
+</Facts>
+
+The answer is one of four:
+- **Ready**.
+- **Needs input**, for example a survey.
+- **Blocked**: only the Steve app can fix it, like a template with no sections.
+- **Already generating**: a run is in progress.
+
+## Generate a report
+
+<ToolBadge name="generate_report" bucket="write" />
+
+Starts a run in the background and returns at once.
+
+<Facts>
+  <Fact label="You say">Which template. Optionally a survey and a title (up to 200 characters, default is the template name).</Fact>
+  <Fact label="You get">Whether it started, number of sections, and a time estimate. If it fails to start, nothing ran and you can retry.</Fact>
+</Facts>
+
+<Callout type="warning" title="Limits">
+  5 reports per hour per connection. Each template can run 3 times per day. Refused runs are not counted. Time: about 2 to 4 minutes for up to 3 sections, 3 to 6 for 4 to 6, and 5 to 12 for 7 or more.
+</Callout>
+
+## Check a report run
+
+<ToolBadge name="get_report_status" bucket="read" />
+
+Shows progress and which sections are done. It never publishes. If the report is already shared, you get the link.
+
+<Facts>
+  <Fact label="You get">Queued, generating, stalled, completed, completed with gaps, or failed. Each section's status, and any failure reason.</Fact>
+</Facts>
+
+Completed with gaps means some sections are missing. The assistant names them. Stalled means no progress in twice the estimate. It offers one retry.
+
+## Set how often a report runs
+
+<ToolBadge name="schedule_report" bucket="write" />
+
+Sets a template's schedule. It replaces the old one.
+
+<Facts>
+  <Fact label="You say">Which template. How often: one-time, daily, weekly, bi-weekly or monthly. Optionally notify by email, Slack, both or neither. Unset keeps the current setting.</Fact>
+  <Fact label="You get">The new and previous schedule, and a warning if notifications have nowhere to go.</Fact>
+</Facts>
+
+<Callout type="warning" title="No day or time">
+  You pick how often only. "Every Thursday at 9am" cannot be set. The assistant lists the five options. The Slack channel is set in the Steve app.
+</Callout>
+
+## Publish a report to a public link
+
+<ToolBadge name="share_report" bucket="write" />
+
+Publishes a finished report. Anyone with the link can read it, with no login. The assistant asks first.
+
+Steve refuses while the report is queued, generating or failed. A report with gaps can be published. The assistant names the gaps first.
+
+## Take a report's public link down
+
+<ToolBadge name="unshare_report" bucket="write" />
+
+Turns the public link off at once. The report itself is untouched.
+
+<Cards>
+  <Card title="Canvases" href="/docs/tools/canvases">Build a deep analysis of one competitor.</Card>
+  <Card title="Sharing and privacy" href="/docs/account/sharing-and-privacy">What a public link means.</Card>
+</Cards>

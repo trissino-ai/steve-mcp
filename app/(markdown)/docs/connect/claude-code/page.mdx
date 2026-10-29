@@ -1,0 +1,29 @@
+export const metadata = {
+  title: "Claude Code",
+  description: "Add Steve to Claude Code with one command, then sign in.",
+};
+
+<Meta eyebrow="Connect your assistant" {...metadata} />
+
+Claude Code is Anthropic's coding assistant for the terminal. Adding Steve takes one command. This is the only command on this site.
+
+<Steps>
+  <Step title="Add the server">Run this once in your terminal: `claude mcp add --transport http steve https://app.hiresteve.ai/api/agent/mcp`</Step>
+  <Step title="Start Claude Code">Open Claude Code as usual.</Step>
+  <Step title="Sign in">Steve needs your approval. If a browser window does not open by itself, open Claude Code's **/mcp** menu, choose **steve** and follow the sign-in option.</Step>
+  <Step title="Approve in Steve">In the browser, sign in to Steve, pick your organization and click **Approve**.</Step>
+  <Step title="Ask a question">Back in Claude Code, ask something about your competitors.</Step>
+</Steps>
+
+<Prompt>Use Steve to list my projects.</Prompt>
+
+<Callout type="note" title="Tokens renew by themselves">
+  Claude Code refreshes your sign-in automatically. If Steve says the connection was revoked or expired, run the sign-in again from the **/mcp** menu.
+</Callout>
+
+{/* screenshot: Claude Code /mcp menu showing steve connected */}
+
+<Cards>
+  <Card title="Sign-in and permissions" href="/docs/account/sign-in">Token lifetimes and how to revoke.</Card>
+  <Card title="Troubleshooting" href="/docs/account/troubleshooting">Errors and fixes.</Card>
+</Cards>

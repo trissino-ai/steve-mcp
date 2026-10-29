@@ -1,0 +1,49 @@
+export const metadata = {
+  title: "What is Steve MCP",
+  description: "Connect your AI assistant to Steve and ask about your competitors in plain words. Every answer has a source and a date.",
+};
+
+<Meta eyebrow="Getting started" {...metadata} />
+
+**Connect your assistant → ask about your competitors → get answers with sources.**
+
+Steve tracks your competitors: their news, ads, social posts and website changes. Steve MCP lets the AI assistant you already use read that data and act on it. You do not open another app. You just ask.
+
+<Prompt>What did my competitors post on LinkedIn this week?</Prompt>
+
+## What you can do
+
+<Facts>
+  <Fact label="Read intelligence">News, reviews, LinkedIn, X and Instagram posts, Google and Meta ads, website changes.</Fact>
+  <Fact label="Set up tracking">Create a project, add competitors, track social accounts and website pages.</Fact>
+  <Fact label="Find competitors">Ask Steve to look for companies you do not track yet.</Fact>
+  <Fact label="Make deliverables">Run reports, build competitor canvases, rewrite battle cards.</Fact>
+  <Fact label="Share">Publish a report, canvas or battle card to a link. Only when you say yes.</Fact>
+</Facts>
+
+Steve has **47 tools**. You never call them yourself. Your assistant picks the right one. See [All 47 tools](/docs/tools).
+
+## What you need
+
+- A **Steve account**. Steve MCP is a part of your Steve plan. See [Plans and limits](/docs/account/plans-and-limits).
+- An assistant that supports **remote MCP servers**: Claude, Claude Code, ChatGPT, Cursor or VS Code.
+- The Steve address: `https://app.hiresteve.ai/api/agent/mcp`
+
+<Callout type="warning" title="Signals organizations cannot connect">
+  Organizations of the Signals type cannot use Steve MCP. The connection is refused with a message that says so.
+</Callout>
+
+## What makes it different
+
+<Steps>
+  <Step title="Answers come from data, not memory">Your assistant is told never to answer about a competitor from its training. It calls Steve, or says the data is not collected yet.</Step>
+  <Step title="Every item has a source">Each news item, post or ad comes with a link and a date.</Step>
+  <Step title="Steve asks before it writes">Steve drafts first. You check. Then it saves. Nothing is published unless you agree.</Step>
+</Steps>
+
+{/* screenshot: a Claude chat showing a Steve answer with sources */}
+
+<Cards>
+  <Card title="Quickstart" href="/docs/getting-started/quickstart">Connect and ask your first question in 5 minutes.</Card>
+  <Card title="How Steve answers" href="/docs/getting-started/how-it-works">Sources, next steps and how changes are saved.</Card>
+</Cards>

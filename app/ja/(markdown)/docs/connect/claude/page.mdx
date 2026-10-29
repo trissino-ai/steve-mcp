@@ -1,0 +1,47 @@
+export const metadata = {
+  title: "Claude（デスクトップと Web）",
+  description: "Claude デスクトップアプリまたは claude.ai に、カスタムコネクタとして Steve を追加します。",
+};
+
+<Meta eyebrow="アシスタントを接続" {...metadata} />
+
+Steve がおすすめする方法です。サインインは 1 回だけです。API キーを作成したり、保管したりする必要はありません。
+
+<Callout type="warning" title="有料の Claude プランが必要です">
+  Pro、Max、Team、Enterprise のいずれかです。無料の Claude アカウントでは、まだコネクタを追加できません。Team または Enterprise では、先にオーナーがコネクタを有効にする必要があります。
+</Callout>
+
+以下の Claude のメニュー名は、英語表示のまま記載しています。お使いの画面の表示が日本語の場合は、近い名前の項目を選んでください。
+
+<Steps>
+  <Step title="コネクタを開く">**Claude デスクトップアプリ**では **Settings → Connectors** を開きます。ブラウザの **claude.ai** では **Settings → Customize → Connectors** を開きます。</Step>
+  <Step title="カスタムコネクタを追加する">**Add custom connector** をクリックします。</Step>
+  <Step title="名前を付けてアドレスを貼り付ける">名前は自由です。Steve で問題ありません。同じ名前のコネクタがすでにある場合は、別の名前にします。リモート MCP サーバーとして `https://app.hiresteve.ai/api/agent/mcp` を貼り付けます。**Client ID** と **Client Secret** は空のままにします。入力は不要です。</Step>
+  <Step title="警告を受け入れる">Claude に、未確認のサードパーティ製コネクタだと警告が表示されます。Anthropic が作っていないコネクタでは、これが普通です。</Step>
+  <Step title="ブラウザで承認する">ブラウザのウィンドウが開きます。求められたら Steve にサインインします。今使っているブラウザとは別のブラウザで開くことがあります。組織を選び、**承認する** をクリックします。</Step>
+  <Step title="ツールを許可する">Steve には 47 個のツールがあり、Claude はツールごとに許可を求めます。最初に **Always allow** を選びます。</Step>
+</Steps>
+
+<Screenshot src="connect-card-claude-one-click-ja.png" alt="Steve のワンクリック接続の手順" caption="Steve アプリ内でも同じ手順を確認できます。設定 → MCP → ワンクリックで接続。" />
+{/* screenshot: Claude asking permission for a Steve tool */}
+
+<Callout type="note" title="スマートフォンをお使いですか？">
+  この設定にはパソコンが必要です。パソコンでこのページを開き、手順を進めてください。
+</Callout>
+
+## 動作を確認する
+
+新しいチャットを開いて、次のように聞きます。
+
+<Prompt lang="ja">Steve を使って、私のプロジェクトを一覧表示してください。</Prompt>
+
+まだプロジェクトがない場合は、次を試します。
+
+<Prompt lang="ja">Steve を使って、競合の追跡を始めてください。私の会社は acme.com です。</Prompt>
+
+問題が起きたときは、[トラブルシューティング](/ja/docs/account/troubleshooting)をご覧ください。
+
+<Cards>
+  <Card title="サインインと権限" href="/ja/docs/account/sign-in">承認ページで確認する内容と、取り消し方。</Card>
+  <Card title="クイックスタート" href="/ja/docs/getting-started/quickstart">最初の質問の例。</Card>
+</Cards>

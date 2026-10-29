@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "Find new competitors",
+  description: "Ask Steve to search for competitors you do not track yet, then pick the ones you want.",
+};
+
+<Meta eyebrow="Tools" {...metadata} />
+
+Not sure who else you compete with? Steve searches for companies similar to your own. You review the suggestions and add the good ones. Nothing is tracked until you say so.
+
+## Try asking
+
+<Prompt>Find competitors I'm not tracking yet.</Prompt>
+<Prompt>Who else do I compete with?</Prompt>
+<Prompt>Did the competitor search finish?</Prompt>
+<Prompt>What competitors did the search find?</Prompt>
+<Prompt>Dismiss Acme, it's not a real competitor.</Prompt>
+
+## The flow
+
+<Steps>
+  <Step title="Start the search">The assistant checks the current suggestions, then asks before starting a new search.</Step>
+  <Step title="Wait">It usually takes 5 to 20 minutes. Ask the assistant to check on it.</Step>
+  <Step title="Review">You see the suggested companies with a short reason for each.</Step>
+  <Step title="Add or dismiss">Add the ones you want as competitors. Dismiss the rest so they stop coming back.</Step>
+</Steps>
+
+<Callout type="note">
+  The project needs your own company set. Projects made through Steve always have it.
+</Callout>
+
+## Search for new competitors
+
+<ToolBadge name="discover_competitors" bucket="write" />
+
+Starts a background search for companies similar to yours that you do not already track.
+
+<Facts>
+  <Fact label="You say">Which project.</Fact>
+  <Fact label="You get">Whether the search started, a rough wait time, and how many suggestions already exist. If a search is already running, you are told.</Fact>
+</Facts>
+
+<Callout type="warning" title="Limits">
+  One search per day per project. Up to 5 searches per hour on one connection. After a trial ends, starting a search is blocked.
+</Callout>
+
+## Check a competitor search
+
+<ToolBadge name="get_discovery_status" bucket="read" />
+
+Tells you whether the search found anything.
+
+<Facts>
+  <Fact label="You get">Running, running late, finished or unknown. Plus how many new companies were found and how many minutes have passed.</Fact>
+</Facts>
+
+Unknown means Steve cannot tell "found nothing" from "failed". The assistant says both and may offer one re-run.
+
+## List discovered competitors
+
+<ToolBadge name="list_discovered_competitors" bucket="read" />
+
+Lists the companies the search suggested, newest first. These are suggestions only.
+
+<Facts>
+  <Fact label="You can say">Only show strong matches (a relevance cut-off), include dismissed ones, and how many to show.</Fact>
+  <Fact label="You get">Company name, website, short description, a relevance score, and why it was suggested. The score is the model's own ranking, not a probability.</Fact>
+  <Fact label="Also">How many were left out because you already track them, and how old the latest search is.</Fact>
+</Facts>
+
+## Dismiss a suggested competitor
+
+<ToolBadge name="dismiss_discovered_competitor" bucket="write" />
+
+Marks a suggestion as not relevant so it stops being suggested. Nothing is deleted. No tracked competitor is touched.
+
+<Facts>
+  <Fact label="You say">Which suggested company. It must come from the suggestions list.</Fact>
+</Facts>
+
+<Cards>
+  <Card title="Competitors" href="/docs/tools/competitors">Add a suggested company as a competitor.</Card>
+</Cards>

@@ -1,0 +1,76 @@
+export const metadata = {
+  title: "Plans and limits",
+  description: "Trial, what each plan includes, what happens when a feature is not in your plan, and rate limits in plain words.",
+};
+
+<Meta eyebrow="Account and security" {...metadata} />
+
+What you can do through Steve MCP depends on your Steve plan. Steve does not charge per question. It limits how much you can do per hour and per day.
+
+## The MCP plan
+
+The MCP plan is built for using Steve inside your assistant. It costs **$49 per month**.
+
+<Facts>
+  <Fact label="People">1 user</Fact>
+  <Fact label="Projects">1 project</Fact>
+  <Fact label="Competitors">3 competitors</Fact>
+  <Fact label="Included">Competitor news, intelligence canvas, LinkedIn, X and Instagram activity, Google and Meta ad tracking</Fact>
+  <Fact label="Not included">Battle cards, website tracking, review sites, reports</Fact>
+  <Fact label="Refresh">Weekly, not daily</Fact>
+</Facts>
+
+Other plans have other limits, such as more competitors. Your organization's plan decides what you get. See Steve's [pricing page](https://app.hiresteve.ai/payments).
+
+## Trial
+
+- The MCP plan trial lasts **3 days** with no card. Other plans start with 14 days.
+- Steve warns you about the days left while you are on a trial.
+- When the trial ends, Steve **blocks everything that saves or starts something**. Reading still works.
+- You see: "Hey, your trial has expired. Please subscribe to use further." Subscribe at the Steve payments page, then try again.
+- Drafting steps also count as saving here, so they stop too.
+
+## When a feature is not in your plan
+
+Some tools need a feature your plan may not have.
+
+| Feature | Tools affected | What you see |
+|---|---|---|
+| Battle cards | The six battle card tools | A "not enabled for your organization" message |
+| Website tracking | The six website tracking tools | The same message. Reading website changes just returns empty. |
+| Google or Meta ads | The ads tools | A short note that the source is not enabled. Not an error. |
+| Reports | Report tools | Usually no templates to run |
+| Review sites | Reviews | Usually empty |
+
+Your assistant is told not to retry. On a self-serve plan, upgrade on the payments page. On a managed plan, ask whoever manages your Steve subscription.
+
+<Callout type="note" title="Plans can be custom">
+  Some organizations are set up by hand. Your list can differ. If a tool says it is not enabled, ask your Steve contact.
+</Callout>
+
+## Plan caps
+
+You can hit a cap on projects, competitors or tracked social accounts. Steve says `limit_reached`. Remove something or upgrade.
+
+## Rate limits
+
+Limits reset at the start of each hour (UTC).
+
+| Limit | Amount |
+|---|---|
+| Reading (news, lists, status) | 300 per hour |
+| Writing (saving, starting jobs) | 60 per hour |
+| Reports | 5 starts per hour. Each template 3 per day. |
+| Canvases | 5 builds per hour |
+| Battle card rewrites | 10 per hour |
+| Competitor searches | 5 per hour, and 1 per day for each project |
+
+- Drafting steps (the "prepare" tools) use the **write** limit, except the report check, which uses the read limit.
+- The limit counts per connection **and** per person across all connections. A new connection does not reset it.
+- Runs that were refused or never started do not count against the daily caps.
+- When you hit a limit, Steve says when it resets.
+
+<Cards>
+  <Card title="Troubleshooting" href="/docs/account/troubleshooting">All error codes in one table.</Card>
+  <Card title="All 47 tools" href="/docs/tools">Which tools need which feature.</Card>
+</Cards>

@@ -1,0 +1,29 @@
+export const metadata = {
+  title: "Claude Code",
+  description: "コマンド 1 つで Claude Code に Steve を追加し、サインインします。",
+};
+
+<Meta eyebrow="アシスタントを接続" {...metadata} />
+
+Claude Code は、Anthropic が提供するターミナル用のコーディングアシスタントです。Steve の追加はコマンド 1 つで完了します。このサイトで紹介するコマンドは、これだけです。
+
+<Steps>
+  <Step title="サーバーを追加する">ターミナルで、次のコマンドを 1 回実行します。`claude mcp add --transport http steve https://app.hiresteve.ai/api/agent/mcp`</Step>
+  <Step title="Claude Code を起動する">いつもどおり Claude Code を開きます。</Step>
+  <Step title="サインインする">Steve はあなたの承認を必要とします。ブラウザのウィンドウが自動で開かない場合は、Claude Code の **/mcp** メニューを開き、**steve** を選んで、サインインの項目に従います。</Step>
+  <Step title="Steve で承認する">ブラウザで Steve にサインインし、組織を選んで **承認する** をクリックします。</Step>
+  <Step title="質問する">Claude Code に戻り、競合について質問します。</Step>
+</Steps>
+
+<Prompt lang="ja">Steve を使って、私のプロジェクトを一覧表示してください。</Prompt>
+
+<Callout type="note" title="トークンは自動で更新されます">
+  Claude Code はサインインを自動で更新します。接続が取り消された、または期限切れになったと Steve に表示された場合は、**/mcp** メニューからもう一度サインインしてください。
+</Callout>
+
+{/* screenshot: Claude Code /mcp menu showing steve connected */}
+
+<Cards>
+  <Card title="サインインと権限" href="/ja/docs/account/sign-in">トークンの有効期間と、取り消し方。</Card>
+  <Card title="トラブルシューティング" href="/ja/docs/account/troubleshooting">エラーと対処法。</Card>
+</Cards>

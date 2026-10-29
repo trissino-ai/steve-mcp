@@ -1,0 +1,49 @@
+export const metadata = {
+  title: "広告",
+  description: "競合が配信している Google 広告と Meta 広告を確認できます。",
+};
+
+<Meta eyebrow="ツール" {...metadata} />
+
+競合がどんな広告を出しているかを確認できます。Google 広告は Google 広告の透明性センターから、Meta 広告は Meta 広告ライブラリ（Facebook、Instagram、Messenger、Threads）から取得します。
+
+広告を表示するには、Steve が競合の Google 広告主または Facebook ページを把握している必要があります。登録されていない場合は、アシスタントが入力をお願いします。詳しくは [競合](/ja/docs/tools/competitors) をご覧ください。
+
+## こんなふうに頼んでみましょう
+
+<Prompt lang="ja">Klue が出している Google 広告を教えて。</Prompt>
+<Prompt lang="ja">競合が Instagram で配信している Meta 広告を見せて。</Prompt>
+<Prompt lang="ja">今月 Crayon が出した動画広告はある？</Prompt>
+<Prompt lang="ja">「無料トライアル」という言葉を含む広告を探して。</Prompt>
+
+## Google 広告を取得する
+
+<ToolBadge name="get_google_ads" bucket="read" lang="ja" />
+
+Google 広告の透明性センターの広告を取得します。
+
+<Facts>
+  <Fact label="指定できること">プロジェクト。競合（任意）。期間。形式（テキスト、画像、動画）。広告内で検索する語句。</Fact>
+  <Fact label="ページ送り">既定では 1 ページ 12 件、最大 48 件です。続きを見たいときは、次のページを頼んでください。</Fact>
+  <Fact label="取得できる内容">タイトル、本文、ボタンの文言、リンク、プレビュー、形式、配信中かどうか、開始日と終了日、競合名。あわせて合計件数も返ります。</Fact>
+</Facts>
+
+## Meta 広告を取得する
+
+<ToolBadge name="get_meta_ads" bucket="read" lang="ja" />
+
+Meta 広告ライブラリの広告を取得します。
+
+<Facts>
+  <Fact label="指定できること">Google 広告と同じですが、形式にカルーセルも選べます。配信面（Facebook、Instagram、Messenger、Threads、Audience Network）も指定できます。</Fact>
+  <Fact label="取得できる内容">Google 広告と同じ項目に加えて、各広告の配信面も返ります。</Fact>
+</Facts>
+
+<Callout type="note" title="プラン">
+  ご利用のプランに Google 広告または Meta 広告の追跡が含まれていない場合、エラーではなく、その旨のメッセージが返ります。MCP のエントリープランには両方が含まれます。
+</Callout>
+
+<Cards>
+  <Card title="競合" href="/ja/docs/tools/competitors">広告主や Facebook ページを追加します。</Card>
+  <Card title="ニュース・レビュー・投稿" href="/ja/docs/tools/intelligence">競合の発信をさらに確認します。</Card>
+</Cards>

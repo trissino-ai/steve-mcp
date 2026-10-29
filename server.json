@@ -1,0 +1,17 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.hiresteve/steve",
+  "description": "Competitive intelligence in your AI assistant: news, ads, posts and site changes, with sources.",
+  "version": "1.0.0",
+  "websiteUrl": "https://www.hiresteve.ai/mcp",
+  "repository": {
+    "url": "https://github.com/trissino-ai/steve-mcp",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://app.hiresteve.ai/api/agent/mcp"
+    }
+  ]
+}

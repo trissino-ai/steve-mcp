@@ -1,0 +1,49 @@
+export const metadata = {
+  title: "Ads",
+  description: "See the Google and Meta ads your competitors run.",
+};
+
+<Meta eyebrow="Tools" {...metadata} />
+
+See what your competitors are advertising. Google ads come from the Google Ads Transparency Center. Meta ads come from the Meta Ad Library: Facebook, Instagram, Messenger and Threads.
+
+Steve can only show ads once it knows the competitor's Google advertiser or Facebook page. If it is missing, the assistant asks you to supply it. See [Competitors](/docs/tools/competitors).
+
+## Try asking
+
+<Prompt>What Google ads is Klue running?</Prompt>
+<Prompt>Show Meta ads from my competitors on Instagram.</Prompt>
+<Prompt>Any video ads from Crayon this month?</Prompt>
+<Prompt>Find ads that mention "free trial".</Prompt>
+
+## Get Google ads
+
+<ToolBadge name="get_google_ads" bucket="read" />
+
+Ads from the Google Ads Transparency Center.
+
+<Facts>
+  <Fact label="You can say">Which project. A competitor (optional). Date range. Format: text, image or video. Words to search in the ad.</Fact>
+  <Fact label="Paging">12 ads per page by default, up to 48. Ask for the next page to see more.</Fact>
+  <Fact label="You get">Title, body, button text, link, preview, format, whether it is still running, start and end date, and the competitor. Plus the total.</Fact>
+</Facts>
+
+## Get Meta ads
+
+<ToolBadge name="get_meta_ads" bucket="read" />
+
+Ads from the Meta Ad Library.
+
+<Facts>
+  <Fact label="You can say">Same as Google, plus carousel as a format. You can also pick where ads show: Facebook, Instagram, Messenger, Threads or Audience Network.</Fact>
+  <Fact label="You get">The same fields as Google, plus where each ad is shown.</Fact>
+</Facts>
+
+<Callout type="note" title="Plan">
+  If your plan does not include Google or Meta ad tracking, you get a plain message saying so, not an error. The entry MCP plan includes both.
+</Callout>
+
+<Cards>
+  <Card title="Competitors" href="/docs/tools/competitors">Add an advertiser or Facebook page.</Card>
+  <Card title="News, reviews and posts" href="/docs/tools/intelligence">More on what competitors publish.</Card>
+</Cards>

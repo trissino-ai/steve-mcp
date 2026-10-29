@@ -1,0 +1,101 @@
+export const metadata = {
+  title: "Canvases",
+  description: "Build a sourced analysis of one competitor, read it with its sources, and share it if you choose.",
+};
+
+<Meta eyebrow="Tools" {...metadata} />
+
+A canvas is a battle-card-style analysis of one competitor. It draws on reviews, news, website changes and your call insights. Every claim keeps its source. A canvas is private until you ask to share. Building one never publishes it.
+
+## Try asking
+
+<Prompt>Build a canvas for Klue.</Prompt>
+<Prompt>How is the Klue canvas coming along?</Prompt>
+<Prompt>What does the canvas say about Klue's pricing?</Prompt>
+<Prompt>Yes, publish the Klue canvas.</Prompt>
+<Prompt>Unshare the Klue canvas.</Prompt>
+
+## The flow
+
+<Steps>
+  <Step title="Build">The assistant confirms, then starts the build. It takes 5 to 15 minutes.</Step>
+  <Step title="Check status">Ask how it is going.</Step>
+  <Step title="Read">Read the whole canvas or one section, with sources.</Step>
+  <Step title="Share, only if you ask">Ask for a public link when you want one. Take it down any time.</Step>
+</Steps>
+
+<Callout type="warning" title="Managers only">
+  Building and publishing a canvas is for organization managers, the same as in the Steve app. Other members get a clear refusal. Everything else here works for any member.
+</Callout>
+
+## List canvas templates
+
+<ToolBadge name="list_canvas_templates" bucket="read" />
+
+Lists canvas templates in a project. You only need this to use a specific template. Otherwise Steve uses a default set of sections.
+
+<Facts>
+  <Fact label="You get">Template name and number of sections.</Fact>
+</Facts>
+
+## Build a competitor canvas
+
+<ToolBadge name="generate_canvas" bucket="write" />
+
+Starts building a sourced canvas for one competitor.
+
+<Facts>
+  <Fact label="You say">Which competitor. Optionally a template. Optionally to rebuild, which overwrites an existing canvas.</Fact>
+  <Fact label="You get">Whether it is new, the number of sections, and the state of any existing canvas.</Fact>
+</Facts>
+
+<Callout type="warning" title="Rebuild overwrites">
+  A rebuild replaces a finished or running canvas. There is no undo, so the assistant asks you first. Without it, an existing canvas is left alone. Limit: 5 builds per hour per connection.
+</Callout>
+
+## Check a canvas build
+
+<ToolBadge name="get_canvas_status" bucket="read" />
+
+Shows progress. It never publishes. If the canvas is already shared, you get the link.
+
+<Facts>
+  <Fact label="You say">Which competitor.</Fact>
+  <Fact label="You get">None, queued, generating, stalled, completed or failed. Sections filled, how many claims have sources, and how many sources are stale.</Fact>
+</Facts>
+
+Stalled means the build ran too long. The assistant offers one retry with a rebuild.
+
+## Read a canvas
+
+<ToolBadge name="get_canvas" bucket="read" />
+
+Returns the canvas with the sources behind each claim.
+
+<Facts>
+  <Fact label="You can say">Which competitor. Optionally one section only.</Fact>
+  <Fact label="You get">Sections and their content. For each claim: source link, title, excerpt and date. Sources over a year old are marked stale.</Fact>
+</Facts>
+
+## Publish a canvas to a public link
+
+<ToolBadge name="share_canvas" bucket="write" />
+
+Publishes a finished canvas. Anyone with the link can read it, with no login. The assistant asks first.
+
+<Callout type="warning" title="Includes your call insights">
+  A shared canvas can include insights drawn from your own sales calls. Check before you share it.
+</Callout>
+
+Steve refuses while the canvas is building or has failed. Managers only.
+
+## Take a canvas's public link down
+
+<ToolBadge name="unshare_canvas" bucket="write" />
+
+Turns the public link off at once. The canvas itself is untouched.
+
+<Cards>
+  <Card title="Sharing and privacy" href="/docs/account/sharing-and-privacy">What a public link means.</Card>
+  <Card title="Sign-in and permissions" href="/docs/account/sign-in">Who counts as a manager.</Card>
+</Cards>

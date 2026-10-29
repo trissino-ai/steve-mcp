@@ -1,0 +1,47 @@
+export const metadata = {
+  title: "Quickstart",
+  description: "Connect your assistant to Steve, sign in, and ask your first question. About 5 minutes.",
+};
+
+<Meta eyebrow="Getting started" {...metadata} />
+
+This guide uses Claude. For other assistants, see the [connection guides](/docs/connect/claude).
+
+<Callout type="note" title="Before you start">
+  You need a Steve account and a paid Claude plan (Pro, Max, Team or Enterprise). On Team or Enterprise, an owner must turn on custom connectors first.
+</Callout>
+
+<Steps>
+  <Step title="Open connectors">In the Claude desktop app, go to **Settings → Connectors**. On claude.ai, go to **Settings → Customize → Connectors**.</Step>
+  <Step title="Add a custom connector">Click **Add custom connector**. Give it any name, for example Steve.</Step>
+  <Step title="Paste the address">Paste `https://app.hiresteve.ai/api/agent/mcp` as the remote MCP server. Leave **Client ID** and **Client Secret** empty.</Step>
+  <Step title="Accept the warning">Claude says it is an unverified third-party connector. That is normal for any connector Anthropic did not build.</Step>
+  <Step title="Approve in Steve">A browser window opens. Sign in to Steve if asked. Pick your organization and click **Approve**.</Step>
+  <Step title="Allow the tools">Claude asks permission for each tool. Choose **Always allow** the first time, so you do not approve 47 tools one by one.</Step>
+</Steps>
+
+{/* screenshot: Claude Connectors page with the Add custom connector dialog */}
+{/* screenshot: the Steve "Approve this connection" page */}
+
+## Ask your first question
+
+If you have no project yet, start here:
+
+<Prompt>Use Steve to start tracking my competitors. My company is acme.com.</Prompt>
+
+Steve reads your website and drafts a project. It shows you the draft. Check it, then say yes. Then Steve looks for your competitors and shows you a list to correct.
+
+<Callout type="tip" title="Give it a few minutes">
+  New competitors are researched in the background. News appears first. Other sources can take minutes to hours.
+</Callout>
+
+When competitors exist, try:
+
+<Prompt>What is the latest news on my competitors?</Prompt>
+<Prompt>Who am I tracking in Steve?</Prompt>
+<Prompt>Show me the Meta ads my competitors are running.</Prompt>
+
+<Cards>
+  <Card title="How Steve answers" href="/docs/getting-started/how-it-works">Why answers have sources, and what empty results mean.</Card>
+  <Card title="Something went wrong?" href="/docs/account/troubleshooting">Every error and what to do.</Card>
+</Cards>

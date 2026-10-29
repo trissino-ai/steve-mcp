@@ -1,0 +1,41 @@
+export const metadata = {
+  title: "ChatGPT",
+  description: "ChatGPT にカスタム MCP サーバーとして Steve を追加します。",
+};
+
+<Meta eyebrow="アシスタントを接続" {...metadata} />
+
+Steve のサインインは ChatGPT の戻り先アドレスに対応しているため、接続できます。ChatGPT はメニューを頻繁に変更します。以下の手順は、カスタム MCP サーバーの追加に関する OpenAI の最新ガイドに沿っています。メニュー名は英語表示のまま記載しています。
+
+<Callout type="warning" title="プランとワークスペースを確認してください">
+  カスタム MCP サーバーを追加できるかどうかは、ChatGPT のプランで決まります。ワークスペースでは、管理者の設定にも左右されます。OpenAI によると、アカウントとワークスペースのポリシーが適用されます。オプションが見つからない場合は、管理者に確認してください。対象プランの最新の一覧は、[OpenAI のヘルプ記事（開発者モードと MCP アプリ）](https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta)をご覧ください。
+</Callout>
+
+<Steps>
+  <Step title="ChatGPT Plugins を開く">ブラウザで **chatgpt.com/plugins** を開きます。</Step>
+  <Step title="カスタム MCP サーバーを追加する">プラス（+）ボタンをクリックし、**Add custom MCP server** を選びます。</Step>
+  <Step title="名前を付ける">名前（たとえば Steve）と、短い説明を入力します。</Step>
+  <Step title="アドレスを貼り付ける">**Connection** の欄に `https://app.hiresteve.ai/api/agent/mcp` を入力します。</Step>
+  <Step title="OAuth を選ぶ">認証方式で OAuth を選びます。クライアント ID とシークレットは空のままにします。Steve が ChatGPT を自動で登録します。</Step>
+  <Step title="確認して作成する">リスクの警告を読み、**I understand and want to continue** をクリックします。続けて **Create as a plugin** をクリックします。</Step>
+  <Step title="Steve にサインインする">ChatGPT から Steve に移動します。サインインし、組織を選んで **承認する** をクリックします。</Step>
+</Steps>
+
+{/* screenshot: ChatGPT Add custom MCP server form */}
+
+ChatGPT が、見つかったツールを表示します。チャットを開始し、そのチャットで Steve を有効にしてから、次のように聞きます。
+
+<Prompt lang="ja">Steve を使って、私のプロジェクトを一覧表示してください。</Prompt>
+
+<Callout type="note" title="古いバージョンの ChatGPT">
+  以前のバージョンでは、**Settings → Apps / Connectors → Advanced → Developer mode** にあります。Plugins ページが見当たらない場合は、そちらを確認してください。
+</Callout>
+
+<Callout type="note" title="Steve チームでは未検証です">
+  Steve のアプリには、まだ ChatGPT 向けの案内がありません。画面の表示がこのページと異なる場合は、ChatGPT の画面に従い、同じアドレスを使ってください。
+</Callout>
+
+<Cards>
+  <Card title="サインインと権限" href="/ja/docs/account/sign-in">承認する内容。</Card>
+  <Card title="トラブルシューティング" href="/ja/docs/account/troubleshooting">エラーと対処法。</Card>
+</Cards>

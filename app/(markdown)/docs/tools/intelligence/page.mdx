@@ -1,0 +1,91 @@
+export const metadata = {
+  title: "News, reviews and posts",
+  description: "Read the news, customer reviews, social posts and website changes Steve has collected about your competitors.",
+};
+
+<Meta eyebrow="Tools" {...metadata} />
+
+These tools answer "what is my competitor doing?". Every item comes with its source link and date. They only read. Nothing changes in Steve.
+
+## Try asking
+
+<Prompt>What's the latest news on Klue?</Prompt>
+<Prompt>What do customers say about Klue on G2?</Prompt>
+<Prompt>Show 1 and 2 star reviews of Crayon.</Prompt>
+<Prompt>What has Klue posted on LinkedIn lately?</Prompt>
+<Prompt>What changed on Klue's pricing page?</Prompt>
+
+<Callout type="note" title="Data is collected, not live">
+  Steve collects on a schedule. New competitors take minutes to hours to fill. The entry plan refreshes weekly. When a result is empty, the assistant tells you why: still collecting, nothing found, not tracked, or not in your plan.
+</Callout>
+
+All lists show the newest first. You can usually say a date range ("from August 3"), one competitor, and how many results (up to 100, default 20). The assistant can fetch more pages if there are more.
+
+## Get competitor news
+
+<ToolBadge name="get_news" bucket="read" />
+
+News articles about your tracked competitors.
+
+<Facts>
+  <Fact label="You can say">Which project. A competitor (optional, otherwise all tracked). Date range. A topic tag.</Fact>
+  <Fact label="You get">Title, summary, source link, date, tags and competitor name.</Fact>
+</Facts>
+
+Competitors you do not track are not covered.
+
+## Get competitor reviews
+
+<ToolBadge name="get_reviews" bucket="read" />
+
+Customer reviews for one competitor from G2, Capterra, Trustpilot and any custom sources.
+
+<Facts>
+  <Fact label="You can say">Which competitor (required). A minimum star rating, from 1 to 5. Date range.</Fact>
+  <Fact label="You get">Source, title, text, rating, the reviewer's role, source link and date. Reviewer names are never shown.</Fact>
+</Facts>
+
+If nothing comes back, you are told why: no website known, competitor not tracked, still collecting, or your filters removed everything.
+
+<Callout type="note" title="Plan">
+  Review sources are plan features. The entry MCP plan does not include them, so expect empty results there.
+</Callout>
+
+## Get LinkedIn posts
+
+<ToolBadge name="get_linkedin_posts" bucket="read" />
+
+## Get X (Twitter) posts
+
+<ToolBadge name="get_twitter_posts" bucket="read" />
+
+## Get Instagram posts
+
+<ToolBadge name="get_instagram_posts" bucket="read" />
+
+All three work the same way. They return posts from accounts Steve scrapes, newest first.
+
+<Facts>
+  <Fact label="You can say">Which project. A competitor, or one tracked account. Leave both out for everything on that platform. Date range.</Fact>
+  <Fact label="You get">The post text, link, date, author, likes, comments, shares and views, and media links. For Instagram the text is the caption.</Fact>
+</Facts>
+
+If nothing is tracked on that platform, the assistant offers to start tracking an account. If an account was just added, the first scrape takes a few minutes. See [Competitors](/docs/tools/competitors).
+
+## Get competitor website changes
+
+<ToolBadge name="get_website_changes" bucket="read" />
+
+Dated changes Steve saw on competitor websites: pricing, messaging, feature pages.
+
+<Facts>
+  <Fact label="You can say">Which project. A competitor. Minor or major changes. Date range.</Fact>
+  <Fact label="You get">Title, description, page link, type, tags, competitor, and when Steve saw it.</Fact>
+</Facts>
+
+The date is when Steve compared the page and saw the change, not when the competitor edited it. Only pages with tracking set up are covered. If nothing is tracked, the assistant offers to start. See [Website tracking](/docs/tools/website-tracking).
+
+<Cards>
+  <Card title="Ads" href="/docs/tools/ads">See Google and Meta ads.</Card>
+  <Card title="Website tracking" href="/docs/tools/website-tracking">Watch specific pages for changes.</Card>
+</Cards>

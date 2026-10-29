@@ -1,0 +1,78 @@
+export const metadata = {
+  title: "Troubleshooting",
+  description: "Every Steve error code, what it means in plain words, and what to do.",
+};
+
+<Meta eyebrow="Account and security" {...metadata} />
+
+An error from Steve shows a short code, a message and a hint. Find the code below. Your assistant can often fix the cause when you ask it to try again.
+
+## Connection and sign-in
+
+| Code | What it means | What to do |
+|---|---|---|
+| missing_token | Your assistant sent no sign-in. | Connect Steve again. |
+| invalid_token | Steve does not know this sign-in, or it was made for another address. The organization may also be a Signals one. | Remove Steve in your assistant and add it again. Signals organizations cannot connect. |
+| token_expired | The 1-hour access ended. | Most assistants renew it by themselves. If not, reconnect. |
+| grant_revoked | The connection was revoked. | Connect again. |
+| refresh_expired | You did not use Steve for 60 days. | Connect again. |
+| refresh_reused | An old sign-in key was used again. Steve cancelled the connection to protect you. | Connect again. |
+| refresh_race | Two renewals happened at the same time. | Try again. |
+| org_membership_lost | You are no longer in the organization. | Connect again and pick an organization you belong to. |
+
+Sign-in handshake errors (invalid_client, invalid_redirect, invalid_request, pkce_mismatch, state_mismatch, handoff_invalid, handoff_expired and similar): remove Steve in your assistant, add it again and start over. If the Approve page says **That application is not registered** or **That return address is not allowed**, do the same. Nothing was approved.
+
+<Callout type="tip" title="Browser opened somewhere else?">
+  The Approve page may open in a different browser than your assistant. Sign in there. You can close the tab when it says it is sending you back.
+</Callout>
+
+## Plan and limits
+
+| Code | What it means | What to do |
+|---|---|---|
+| feature_not_granted | Your plan does not include this feature. | Do not retry. Upgrade on the payments page, or ask whoever manages your subscription. |
+| limit_reached | You reached a cap, such as projects or tracked social accounts. | Remove something or upgrade. |
+| trial_expired | Your trial ended. Reading works, saving does not. | Subscribe on the payments page. |
+| rate_limited | You used your hourly or daily allowance. | Wait for the reset time in the message. A new connection does not reset it. |
+| manager_only | Only organization managers can do this (build or share a canvas). | Ask a manager. |
+
+## Your request
+
+| Code | What it means | What to do |
+|---|---|---|
+| validation_failed | An input is wrong: a placeholder website such as example.com, a competitor already tracked, a page not on the competitor's site, and similar. | Read the message and fix that input. |
+| project_not_found | No project with that name in the connected organization. | Ask Steve to list your projects. |
+| competitor_not_found | No such tracked competitor in the project. | Ask Steve to list competitors. |
+| account_not_found | No such social account. | Ask Steve to list tracked accounts. |
+| platform_mismatch | A link for another platform was given. | Use the right platform. |
+| handle_not_recognized | Steve could not read it as a profile. | Paste the full profile link. |
+| tracking_request_not_found | No such website tracker. | Ask Steve to list website trackers. |
+| battle_card_not_found | No such battle card. | Ask Steve to list battle cards. |
+| report_not_found | No such report. | Start from the report you ran. |
+| template_not_found | No such report template. | Ask Steve to list report templates. |
+| template_empty | The template has no sections. | Add sections in the Steve app. |
+| survey_not_found | The survey is not in this project. | Say which survey you mean. |
+| canvas_not_found | No canvas for that competitor yet. | Ask for the canvas status, or build one. |
+| canvas_exists | A canvas already exists. | Say whether it may be replaced. |
+| no_anchor | The project has no company of your own. | Add your own company as the anchor. |
+| not_publishable | A report or canvas is not finished. | Wait until it is done, then share. |
+
+## Steve side
+
+| Code | What it means | What to do |
+|---|---|---|
+| upstream_failed | An inner step failed. | Try again. |
+| server_error | Steve could not finish the answer. | Try again. The Steve app shows the same data. |
+| queue_send_failed | Steve could not start the background job. Nothing was queued. | Try again soon. |
+| config_missing | A Steve service is not set up. | You cannot fix it. Contact Steve support. |
+
+## Common problems
+
+- **Tools are empty.** Collection takes minutes to hours. See [How Steve answers](/docs/getting-started/how-it-works).
+- **Claude will not add a connector.** You need Pro, Max, Team or Enterprise. Team and Enterprise need an owner to turn it on.
+- **Too many permission prompts.** Choose **Always allow** for Steve's tools.
+
+<Cards>
+  <Card title="Plans and limits" href="/docs/account/plans-and-limits">Trial, features and rate limits.</Card>
+  <Card title="FAQ" href="/docs/faq">Quick answers.</Card>
+</Cards>

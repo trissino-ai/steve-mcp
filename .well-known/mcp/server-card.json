@@ -1,0 +1,2009 @@
+{
+  "serverInfo": {
+    "name": "steve-agent",
+    "title": "Steve",
+    "version": "1.0.0"
+  },
+  "description": "Steve: AI competitive intelligence over MCP. Competitor news, ads, posts, reviews and website changes, with a source and date on every item.",
+  "websiteUrl": "https://www.hiresteve.ai/mcp",
+  "transport": {
+    "type": "streamable-http",
+    "url": "https://app.hiresteve.ai/api/agent/mcp"
+  },
+  "authentication": {
+    "required": true,
+    "schemes": [
+      "oauth2"
+    ]
+  },
+  "tools": [
+    {
+      "name": "prepare_create_project",
+      "title": "Draft a project from a company website",
+      "description": "Fill in create_project's arguments from one company website. Writes nothing.\n\nCall this FIRST whenever the user names a company they want a project for, instead of asking them for seven fields. Steve reads the site and drafts the project the way the app does.\nThen: show the draft to the user in plain language, let them correct any line, and call create_project with what they agreed. That confirmation is the point of this tool — do not create the project without it.\nIt scrapes and reasons, so it takes a moment. Tell the user you are reading the site rather than sitting silent, and do not retry a call that is still running.\n\nstatus ready: the draft is complete. status needs_input: ask only for the fields in missingFields, then call create_project. status needs_choice: the domain hosts several products — ask which one and call this tool again with that product url. Never pick the product yourself.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The company website the project should be about — hiresteve.ai, https://www.klue.com, either form. This is the only argument the user has to supply. A placeholder such as example.com comes back as needs_input without being read."
+          },
+          "hint": {
+            "description": "Anything the user already said about the project: a product to focus on, a market, a name they want. Used to steer the draft, never to override what the site says.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "prepare_add_competitor",
+      "title": "Draft competitors from their websites",
+      "description": "Fill in add_competitor's arguments from competitor website urls. Writes nothing.\n\nThis is the flow the competitors page uses: ask the user to paste competitor website addresses, pass them here, and Steve reads each one.\nThen: show the drafts, let the user drop or correct any of them, and call add_competitor ONCE with every row they confirmed — that tool takes the whole list.\nAt most 10 urls per call, because each one is a scrape — split a longer list yourself.\nOne url that fails to resolve comes back as failed with its reason while the rest come back filled; the call never fails as a whole.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "urls": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Competitor website urls, exactly as the user pasted them. At most 10 per call — split a longer list across calls. Placeholder addresses such as example.com or localhost come back as failed without being read."
+          }
+        },
+        "required": [
+          "projectId",
+          "urls"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "list_projects",
+      "title": "List projects",
+      "description": "List every project in the connected Steve organization, with the number of competitors each one tracks.\n\nCall this when the project is not already known in the conversation: it maps a project name to the id every other tool needs.\nWith exactly one project, use it. With several and no project named, ask which one.\nTwo projects can share a name; industry and description tell them apart.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "create_project",
+      "title": "Create a project",
+      "description": "Create a competitive-intelligence project and its anchor company (your own company) in one call.\n\nDo not interrogate the user for these fields. Call prepare_create_project with the company website first — it fills every argument below from the site — show the user the draft, and call this with what they confirmed. Calling this directly is still valid when the user has already given you the details.\nname, industry, subIndustry, targetMarket, description, anchorName and anchorUrl are all required. The description drives the competitor-research prompt.\nsubIndustry and targetMarket are arrays and must each hold at least one entry.\nThis queues competitor research automatically; do not add the anchor company again with add_competitor.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What the project is called."
+          },
+          "industry": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The industry the product competes in, e.g. \"Fintech\"."
+          },
+          "subIndustry": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "At least one sub-industry. A json array column — not free text."
+          },
+          "targetMarket": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "At least one target market, e.g. [\"SMB\",\"Mid-market\"]. A json array column."
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What the product does. This drives the competitor-research prompt, so vague text produces vague research."
+          },
+          "anchorName": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The name of your own company — the anchor of the project."
+          },
+          "anchorUrl": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Your own company website. Stored as a bare domain; news joins on that form. Must be a real address — example.com, test.com, localhost and ip addresses are rejected. Ask the user rather than inventing one."
+          },
+          "trackingFrequency": {
+            "description": "NOT NULL on the table but defaults to \"manual\".",
+            "type": "string",
+            "enum": [
+              "bi-weekly",
+              "weekly",
+              "monthly",
+              "manual"
+            ]
+          },
+          "trackSeo": {
+            "type": "boolean"
+          },
+          "trackAds": {
+            "type": "boolean"
+          },
+          "trackSocial": {
+            "type": "boolean"
+          },
+          "trackWebsite": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "industry",
+          "subIndustry",
+          "targetMarket",
+          "description",
+          "anchorName",
+          "anchorUrl"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "list_competitors",
+      "title": "List competitors",
+      "description": "List the competitors tracked in a project, with the social handles and advertiser ids Steve holds for each one.\n\nNo googleAdvertiserId means get_google_ads has nothing to join on; no facebookPageId means the same for get_meta_ads.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "add_competitor",
+      "title": "Add competitors",
+      "description": "Add competitors to a project — several in one call, the way the competitors page adds a pasted list of websites.\n\nPass the WHOLE confirmed list in `competitors`. Do not call this once per company: one call adds them all, and each row is isolated so one failure does not cost the others.\nOnly name and url are required per entry; pass everything else you know in the same call.\nWhen the user gives you website addresses rather than details, call prepare_add_competitor first and show what it found.\nEach competitor added here starts the same background pipeline the app starts: reviews, news, company research, website-page discovery and social-handle discovery, plus starter battle cards. researchQueued says whether that dispatch happened — without it the competitor exists and every feed stays empty.\ngoogleAdvertiserId and facebookPageId are what make get_google_ads and get_meta_ads return rows.\nlinkedinHandle and instagramHandle also start tracking that account and queue a scrape. tikTokHandle and youtubeHandle are stored only; nothing is scraped.\nPassing a url that is already in the project is safe: it comes back as existing, any field that was still empty is filled in from what you passed, and the pipeline is not re-run.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitors": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "The competitor company name."
+                },
+                "url": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "The competitor website. Stored as a bare domain; news reads join on that form. Must be a real address — example.com, test.com, localhost and ip addresses are rejected as placeholders."
+                },
+                "companyOneLiner": {
+                  "type": "string"
+                },
+                "headquarters": {
+                  "type": "string"
+                },
+                "founded": {
+                  "type": "string"
+                },
+                "companySize": {
+                  "type": "string"
+                },
+                "revenue": {
+                  "type": "string"
+                },
+                "marketShare": {
+                  "type": "string"
+                },
+                "tag": {
+                  "type": "string"
+                },
+                "context": {
+                  "description": "Free-text notes carried into competitive analysis.",
+                  "type": "string"
+                },
+                "isAnchor": {
+                  "description": "True only for your own company. Defaults to false.",
+                  "type": "boolean"
+                },
+                "isTracked": {
+                  "description": "Defaults to true. Untracked competitors are excluded from reads.",
+                  "type": "boolean"
+                },
+                "linkedinHandle": {
+                  "description": "LinkedIn profile url or handle. Also starts tracking the account, so get_linkedin_posts works.",
+                  "type": "string"
+                },
+                "instagramHandle": {
+                  "description": "Instagram profile url or handle. Also starts tracking the account, so get_instagram_posts works.",
+                  "type": "string"
+                },
+                "tikTokHandle": {
+                  "description": "Stored only — no read tool covers TikTok and nothing is scraped.",
+                  "type": "string"
+                },
+                "youtubeHandle": {
+                  "description": "Stored only — no read tool covers YouTube and nothing is scraped.",
+                  "type": "string"
+                },
+                "googleAdvertiserId": {
+                  "description": "Google Transparency Center advertiser id (AR…). Required for get_google_ads to return rows.",
+                  "type": "string"
+                },
+                "googleAdsRegion": {
+                  "description": "Google Ads region code. Defaults to 2840 (United States).",
+                  "type": "string"
+                },
+                "facebookPageId": {
+                  "description": "Meta Ad Library page id. Required for get_meta_ads to return rows.",
+                  "type": "string"
+                },
+                "facebookPageUrl": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "url"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Every competitor to add, in one call — pass the whole confirmed list rather than calling this once per company. One entry is fine. At most 10."
+          }
+        },
+        "required": [
+          "projectId",
+          "competitors"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "list_tracked_accounts",
+      "title": "List tracked social accounts",
+      "description": "List the social accounts Steve scrapes for a project, with the url exactly as stored.\n\nPass that url straight into get_linkedin_posts, get_twitter_posts or get_instagram_posts; rebuilding it from a handle will not match.\nA null lastPortedAt means the scraper has never run for that account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "platform": {
+            "description": "Omit to list every tracked account in the project.",
+            "type": "string",
+            "enum": [
+              "linkedin",
+              "x",
+              "instagram"
+            ]
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "set_linkedin_handle",
+      "title": "Track a LinkedIn account",
+      "description": "Start scraping a LinkedIn company or person profile for a project. Accepts a full profile url or a bare handle.\n\nA url that is not LinkedIn is rejected — use set_x_handle or set_instagram_handle for those.\nThe returned account url is the exact value get_linkedin_posts expects. Posts take a few minutes to appear.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "handle": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A profile url or bare handle, e.g. https://www.linkedin.com/company/acme, x.com/acme or @acme."
+          }
+        },
+        "required": [
+          "projectId",
+          "handle"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "set_x_handle",
+      "title": "Track an X (Twitter) account",
+      "description": "Start scraping an X (Twitter) profile for a project. Accepts a full profile url, x.com/handle, twitter.com/handle or a bare @handle.\n\nA url that is not X is rejected — use set_linkedin_handle or set_instagram_handle for those.\nThe posts this produces are read back with get_twitter_posts, which takes the account url returned here.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "handle": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A profile url or bare handle, e.g. https://www.linkedin.com/company/acme, x.com/acme or @acme."
+          }
+        },
+        "required": [
+          "projectId",
+          "handle"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "set_instagram_handle",
+      "title": "Track an Instagram account",
+      "description": "Start scraping an Instagram profile for a project. Accepts a full profile url or a bare @handle.\n\nA url that is not Instagram is rejected — use set_linkedin_handle or set_x_handle for those.\nThe returned account url is the exact value get_instagram_posts expects. Posts take a few minutes to appear.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "handle": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A profile url or bare handle, e.g. https://www.linkedin.com/company/acme, x.com/acme or @acme."
+          }
+        },
+        "required": [
+          "projectId",
+          "handle"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_news",
+      "title": "Get competitor news",
+      "description": "Read the news articles Steve has collected for a project, newest first. Pass competitorId to narrow it to one competitor.\n\nOnly tracked competitors are covered — list_competitors shows which are tracked.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "description": "Competitor id from list_competitors. Omit to cover every tracked competitor in the project.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "from": {
+            "description": "Only items published on or after this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "to": {
+            "description": "Only items published on or before this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "category": {
+            "description": "Keep only articles carrying this category tag.",
+            "type": "string",
+            "minLength": 1
+          },
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_reviews",
+      "title": "Get competitor reviews",
+      "description": "Read the customer reviews Steve has collected for one competitor, newest first. Covers G2, Capterra, Trustpilot and any custom sources, each review with its url and date.\n\nOnly tracked competitors are covered — list_competitors shows which are tracked.\nWhen items comes back empty, emptyReasonCode says WHY and emptyReason says it in words. Branch on the code, read the sentence to the user, and never just say \"there are no reviews\".\nnot_tracked / no_domain: nothing will ever arrive until the user changes something in the Steve app. collecting: it was dispatched and has not returned yet, so only time fixes it. filtered_out: reviews DO exist and this call excluded them — widen minRating or the date range and try again before telling the user there is nothing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Competitor id from list_competitors. Reviews are read one competitor at a time."
+          },
+          "minRating": {
+            "description": "Keep only reviews rated at or above this, on the 1-5 scale.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "from": {
+            "description": "Only items published on or after this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "to": {
+            "description": "Only items published on or before this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId",
+          "competitorId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_website_changes",
+      "title": "Get competitor website changes",
+      "description": "Read the dated changes Steve has observed on competitor websites — pricing pages, messaging, feature pages — newest first. Pass competitorId to narrow it to one competitor, type to keep only major or minor changes.\n\nobservedAt is when Steve compared the page and saw the change, NOT when the page changed. The edit landed somewhere between that comparison and the one before it, so say \"Steve saw this on <date>\", never \"they changed it on <date>\".\nOnly pages with tracking set up are covered; an empty result can mean no tracking rather than no movement. prepare_track_website starts tracking a competitor page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "description": "Competitor id from list_competitors. Omit to cover every tracked competitor in the project.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "type": {
+            "description": "Keep only changes of this weight. Omit for both.",
+            "type": "string",
+            "enum": [
+              "minor",
+              "major"
+            ]
+          },
+          "from": {
+            "description": "Only items published on or after this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "to": {
+            "description": "Only items published on or before this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "discover_website_pages",
+      "title": "Crawl a competitor site for trackable pages",
+      "description": "Crawl a competitor's website so Steve knows what pages it has. Enqueues a crawl; nothing is tracked yet.\n\nCall this when prepare_track_website_pages comes back with status needs_discovery — that means Steve has never crawled the site and has no pages to choose from. Do NOT ask the user to paste urls instead; this is the tool that fixes it.\nThe crawl runs in the background. Tell the user roughly how long and let them come back, rather than polling.\nqueued false with alreadyQueuedRecently true means a crawl is already running — say that, do not claim to have started a second one.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Competitor id from list_competitors. Match the competitor the user named."
+          }
+        },
+        "required": [
+          "projectId",
+          "competitorId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "prepare_track_website_pages",
+      "title": "Pick which pages to watch from a plain-language prompt",
+      "description": "Turn what the user wants watched into the actual page urls. Writes nothing — no tracker is created and nothing is scheduled.\n\nCall this FIRST whenever the user asks to watch a competitor page, instead of asking them for urls. Pass their sentence through as `prompt`, unedited.\nThen: show the pages as a short list, let the user drop or add any, and call track_website_pages with what they confirmed.\n\nstatus ready: show the pages and confirm. status needs_discovery: Steve has never crawled the site — call discover_website_pages. status no_match: the site is crawled but nothing matches this prompt — ask for a broader one, or for urls by hand. status needs_input: the matcher failed — ask the user which pages to watch.\nOn a cache hit reasoningAvailable is false. Do not present an empty reasoning string as the model’s thinking.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Competitor id from list_competitors. Match the competitor the user named."
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "What the user wants watched, in their own words. Pass their sentence through unedited — Steve matches it against the competitor's crawled pages."
+          }
+        },
+        "required": [
+          "projectId",
+          "competitorId",
+          "prompt"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "track_website_pages",
+      "title": "Start watching a competitor’s pages",
+      "description": "Create the tracker. Call this once, with the pages the user confirmed.\n\nSay the baseline out loud when you report back: the first run has nothing to compare against, so it records what the pages look like now and the first change report is the run after it. A user told \"watching it now\" who checks an hour later and sees nothing has been misled.\nduplicateOfRequestId set means an identical tracker already exists — nothing was created. Say it is already watched and offer the status instead.\njobQueued false means the tracker was saved but its first run did not start. Do not report that as a clean success; offer rerun_website_tracking.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Competitor id from list_competitors. Match the competitor the user named."
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "The same prompt that produced these pages."
+          },
+          "trackedUrls": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "The pages the user confirmed. At least one — a tracker with no urls crawls forever and reports nothing."
+          },
+          "suggestedUrls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Every page prepare_track_website_pages offered, including the ones the user dropped."
+          }
+        },
+        "required": [
+          "projectId",
+          "competitorId",
+          "prompt",
+          "trackedUrls",
+          "suggestedUrls"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "list_website_tracking_requests",
+      "title": "List website trackers",
+      "description": "The trackers a project already has, with what each one watches.\n\nThis is the name-to-id lookup for get_website_tracking_status. A session that did not create the tracker itself has no other way to find it.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "description": "Competitor id from list_competitors. Omit to cover every tracked competitor in the project.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_website_tracking_status",
+      "title": "Read what changed on the tracked pages",
+      "description": "The latest run of a tracker, and what it found.\n\nReport the change text — that is the payload. The screenshots are presigned links that expire within the hour, so never cache one or reprint it in a later turn; call this tool again instead.\nSay \"detected on\", never \"changed on\". Steve knows when it noticed a change, not when the competitor shipped it.\nstate baseline_recorded means the first run stored how the pages look now — real reports start with the next run. state unknown means the run left no status, which is what a crash looks like; surface the message rather than reporting no changes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trackingRequestId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Id from track_website_pages or list_website_tracking_requests."
+          }
+        },
+        "required": [
+          "trackingRequestId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "rerun_website_tracking",
+      "title": "Run a website tracker again now",
+      "description": "Re-run an existing tracker instead of waiting for the weekly refresh. Watches the same pages — nothing is changed.\n\nqueued false with alreadyQueuedRecently true means a run is already in flight. Say so; do not claim a second one.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trackingRequestId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Id from track_website_pages or list_website_tracking_requests."
+          }
+        },
+        "required": [
+          "trackingRequestId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_linkedin_posts",
+      "title": "Get LinkedIn posts",
+      "description": "Read the LinkedIn posts Steve has scraped for a project, newest first.\n\nPass competitorId to read one company, or url to read one tracked account. Omit both to read everything this project holds on LinkedIn.\nPosts are stored under both a tracked profile url and the competitor domain; both are searched. resolvedAccounts lists the urls that were used.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "description": "Competitor id from list_competitors. Omit to cover every tracked competitor in the project.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "url": {
+            "description": "Tracked account url from list_tracked_accounts. Omit to read every tracked account on this platform.",
+            "type": "string",
+            "minLength": 1
+          },
+          "from": {
+            "description": "Only items published on or after this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "to": {
+            "description": "Only items published on or before this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_twitter_posts",
+      "title": "Get X (Twitter) posts",
+      "description": "Read the X (Twitter) posts Steve has scraped for a project, newest first.\n\nPass competitorId to read one company, or url to read one tracked account. Omit both to read everything this project holds on X.\nThe matching write tool is set_x_handle: accounts are stored under \"x\", their posts under \"twitter\".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "description": "Competitor id from list_competitors. Omit to cover every tracked competitor in the project.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "url": {
+            "description": "Tracked account url from list_tracked_accounts. Omit to read every tracked account on this platform.",
+            "type": "string",
+            "minLength": 1
+          },
+          "from": {
+            "description": "Only items published on or after this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "to": {
+            "description": "Only items published on or before this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_instagram_posts",
+      "title": "Get Instagram posts",
+      "description": "Read the Instagram posts Steve has scraped for a project, newest first.\n\nPass competitorId to read one company, or url to read one tracked account. Omit both to read everything this project holds on Instagram.\nInstagram rows skip the summarizer, so content is the raw caption.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "description": "Competitor id from list_competitors. Omit to cover every tracked competitor in the project.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "url": {
+            "description": "Tracked account url from list_tracked_accounts. Omit to read every tracked account on this platform.",
+            "type": "string",
+            "minLength": 1
+          },
+          "from": {
+            "description": "Only items published on or after this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "to": {
+            "description": "Only items published on or before this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_google_ads",
+      "title": "Get Google ads",
+      "description": "Read the Google Transparency Center ads Steve has collected for a project's competitors.\n\nA competitor only produces ads once Steve holds its googleAdvertiserId — list_competitors shows which ones have it.\nsourceGranted: false means the organization does not have Google ads tracking enabled at all, which is different from having no ads.\nformat narrows the returned page; total is the unfiltered count.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "description": "Competitor id from list_competitors. Omit to cover every tracked competitor in the project.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "from": {
+            "description": "Only items published on or after this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "to": {
+            "description": "Only items published on or before this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "format": {
+            "description": "Creative format filter, e.g. \"text\", \"image\", \"video\".",
+            "type": "string",
+            "minLength": 1
+          },
+          "search": {
+            "description": "Free-text match against the ad title and body.",
+            "type": "string",
+            "minLength": 1
+          },
+          "page": {
+            "description": "1-based page number. Defaults to 1.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "size": {
+            "description": "Ads per page. Defaults to 12, clamped to 48.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_meta_ads",
+      "title": "Get Meta ads",
+      "description": "Read the Meta Ad Library ads Steve has collected for a project's competitors — Facebook, Instagram, Messenger and Threads.\n\nA competitor only produces ads once Steve holds its facebookPageId — list_competitors shows which ones have it.\nsourceGranted: false means the organization does not have Meta ads tracking enabled at all, which is different from having no ads.\nformat and publisherPlatform narrow the returned page; total is the unfiltered count.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "description": "Competitor id from list_competitors. Omit to cover every tracked competitor in the project.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "from": {
+            "description": "Only items published on or after this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "to": {
+            "description": "Only items published on or before this date.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})?)?$"
+          },
+          "format": {
+            "description": "Creative format filter, e.g. \"image\", \"video\", \"carousel\".",
+            "type": "string",
+            "minLength": 1
+          },
+          "search": {
+            "description": "Free-text match against the ad title and body.",
+            "type": "string",
+            "minLength": 1
+          },
+          "publisherPlatform": {
+            "description": "Keep only ads that ran on this Meta surface.",
+            "type": "string",
+            "enum": [
+              "FACEBOOK",
+              "INSTAGRAM",
+              "MESSENGER",
+              "THREADS",
+              "AUDIENCE_NETWORK"
+            ]
+          },
+          "page": {
+            "description": "1-based page number. Defaults to 1.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "size": {
+            "description": "Ads per page. Defaults to 12, clamped to 48.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "list_battle_cards",
+      "title": "List battle cards",
+      "description": "The battle cards in a project — the newest version of each one, with the competitor it covers.\n\nThis is the name-to-id lookup. A competitor often has several cards (a competitive overview and an objection-handling one, say), so ask which the user means by name rather than picking.\nhasUserEdits true means a regeneration of that card will need approval before it goes live.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "description": "Competitor id from list_competitors. Omit to cover every tracked competitor in the project.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_battle_card",
+      "title": "Read a battle card’s saved instructions and state",
+      "description": "What regenerating this card would replace, and what state it is in.\n\nCall this BEFORE regenerate_battle_card, every time. Regeneration overwrites the instructions saved on the card for every future run, and this is the only way to know what is being lost — afterwards they are gone.\nsavedInstructions null means nothing is lost. Skip the warning and just ask whether to regenerate.\nsavedInstructions set means quote it back to the user, say it will be replaced for every future regeneration and not just this run, and wait for a yes.\nhasUserEdits true means the new copy will land waiting for approval rather than live — say so before, not after.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "battleCardId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Id from list_battle_cards. Match the card the user named — a competitor can have several."
+          }
+        },
+        "required": [
+          "battleCardId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "regenerate_battle_card",
+      "title": "Rewrite a battle card to new instructions",
+      "description": "Replace the instructions saved on a battle card and start a fresh generation on them.\n\nDESTRUCTIVE. The instructions are overwritten permanently and apply to every future regeneration of this card, not just this run. Call get_battle_card first, quote what is there, and get an explicit yes before calling this.\npreviousInstructions comes back on every outcome including failures — it is the only way to put them back, so keep it and offer it if the user changes their mind.\nThis writes a NEW version of the card and returns its id. Poll THAT id with get_battle_card_status; the id you passed in is now the previous version.\nGeneration runs in the background and takes a few minutes. Tell the user roughly how long and let them come back.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "battleCardId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Id from list_battle_cards. Match the card the user named — a competitor can have several."
+          },
+          "instructions": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "How the card should be written, in the user’s own words. This REPLACES the instructions saved on the preset for every future regeneration — read the current ones back with get_battle_card and confirm before calling."
+          }
+        },
+        "required": [
+          "battleCardId",
+          "instructions"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_battle_card_status",
+      "title": "Check a battle card regeneration",
+      "description": "Where a regeneration got to, and the link if the card is already shared.\n\nThis does not publish anything. state completed with shareBlockedReason not_published means the card is finished and private — offer share_battle_card and wait for a yes. On any other state not_published means it is simply not ready.\nstate pending_approval is NOT a failure: the card has manual edits, so the new copy is waiting for someone to accept it and the public page still shows the old version. There is no link in that case and saying otherwise would point the user at the card they asked to change.\nstate needs_data means the card cannot be built from what Steve holds. Offer a data refresh, never a retry loop.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "battleCardId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Id from list_battle_cards. Match the card the user named — a competitor can have several."
+          }
+        },
+        "required": [
+          "battleCardId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "share_battle_card",
+      "title": "Publish a battle card to a public link",
+      "description": "Put a finished battle card behind a url that anyone who has it can read, with no login.\n\nThis is a publication of the user’s competitive intelligence to the open internet. Ask first, in those terms, and call it only after they say yes — never to \"get the link\" for a card they only asked about.\nRefused on a card that is not finished: shareBlockedReason names why and nothing is published. pending_approval is refused too — the public page would show the copy the user asked to change.\nwasPublic true means it was already shared and this call changed nothing. Say that instead of announcing it as newly published.\nReversible with unshare_battle_card, which kills the url immediately.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "battleCardId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Id from list_battle_cards. Match the card the user named — a competitor can have several."
+          }
+        },
+        "required": [
+          "battleCardId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "unshare_battle_card",
+      "title": "Take a battle card’s public link down",
+      "description": "Turn off the public link for a battle card. The url stops working immediately; the card itself is untouched.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "battleCardId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Id from list_battle_cards. Match the card the user named — a competitor can have several."
+          }
+        },
+        "required": [
+          "battleCardId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "discover_competitors",
+      "title": "Sweep for competitors nobody is tracking yet",
+      "description": "Run a fresh discovery sweep against the project’s anchor company, looking for competitors Steve is not already watching.\n\nThis costs a real sweep. Confirm with the user before calling — check list_discovered_competitors first, since a recent sweep may already have the answer.\nHold BOTH the watermark and the startedAt that come back, and pass both to get_discovery_status. Discovery leaves no job record: the watermark is how Steve tells whether the sweep produced anything, and startedAt is how it tells how long the sweep has been going.\nFindings are suggestions, not tracked competitors. Promoting one goes through prepare_add_competitor with its url.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_discovery_status",
+      "title": "Check a competitor sweep",
+      "description": "Whether a discovery sweep has turned anything up, measured against the watermark and startedAt discover_competitors gave you. Both are required, and both must be the values that call returned.\n\nstate unknown is the honest answer and must be repeated as such: a sweep that found nothing new and a sweep that crashed leave identical evidence, because a re-found company is blocked by a unique constraint and its timestamp does not move. Say both possibilities. Do NOT report \"no new competitors found\" as a fact.\nOffer a re-run at most once from state unknown. A poll that keeps suggesting another sweep burns sweeps on a silent failure.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "watermark": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The watermark discover_competitors returned. Discovery writes no job row, so a sweep is tracked by whether rows newer than this appeared — pass back exactly what you were given."
+          },
+          "startedAt": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The startedAt discover_competitors returned, which is when the sweep was enqueued. Separate from watermark on purpose: the watermark is the newest EXISTING row and can be days or years old, so timing a sweep against it would report every sweep as long overdue. Pass back exactly what you were given."
+          }
+        },
+        "required": [
+          "projectId",
+          "watermark",
+          "startedAt"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "list_discovered_competitors",
+      "title": "List discovered competitors",
+      "description": "Companies a discovery sweep suggested, newest first. These are suggestions — nothing here is tracked yet.\n\nLead with the highest relevanceScore and QUOTE its reasoning. The score is the discovery model’s own ordering, not a confidence percentage, so do not read it out as one.\nSuggestions the project already tracks are filtered out; alreadyTrackedCount says how many.\nemptyReason swept_nothing_found is a real answer — the sweep ran and there was nothing new. emptyReason never_swept means no sweep has ever run.\nTo start tracking one, hand its url to prepare_add_competitor.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          },
+          "minRelevance": {
+            "description": "Drop suggestions below this score. The score is the discovery model’s own ordering, not a confidence percentage.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "includeDismissed": {
+            "description": "Include suggestions the user already dismissed.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "dismiss_discovered_competitor",
+      "title": "Dismiss a suggested competitor",
+      "description": "Mark a discovered company as not relevant so it stops being suggested. Nothing is deleted and no tracked competitor is affected.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The discovered competitor’s url, from list_discovered_competitors."
+          }
+        },
+        "required": [
+          "projectId",
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "list_report_templates",
+      "title": "List report templates",
+      "description": "The report templates in a project, with how many sections each has and the cadence it is set to.\n\nThis is the name-to-id lookup for the other report tools. Ask which template the user means by name.\nrequiresSurvey means generating it needs a surveyId. requiresSalesReps means it cannot run until reps are configured on the template in the app.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "prepare_generate_report",
+      "title": "Check what a report run would do",
+      "description": "Describe the run before spending it. Writes nothing and calls no model.\n\nCall this BEFORE generate_report, every time. A report is the most expensive thing a user can start from one sentence, and this runs every check the generation would run — so nobody is told \"generating\" for a template that was going to be refused.\nThen: tell the user what it covers, how many sections, roughly how long, AND that the finished report gets a public link. Wait for a yes.\n\nstatus needs_input: an argument fixes it — ask for what missingRequirements names. status blocked: only the Steve app can fix it, so say where and offer NO retry. status already_generating: a run is going — poll inFlightReportId rather than starting another.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "templateId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Id from list_report_templates. Required — the legacy template-less report shape is not exposed here."
+          },
+          "surveyId": {
+            "description": "Win-loss survey id. Required only when a section reads winLossSurveyData; prepare_generate_report names the sections that need it.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId",
+          "templateId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "generate_report",
+      "title": "Generate a report",
+      "description": "Start a report run. Returns immediately with an id to poll — the generation happens in the background.\n\nOnly call this after prepare_generate_report came back ready AND the user said yes. It is a real model spend and there is no cancel.\nstate already_generating means a run was already in flight; poll the id that comes back instead of starting another.\nstate failed means nothing started and a retry is safe.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "templateId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Id from list_report_templates. Required — the legacy template-less report shape is not exposed here."
+          },
+          "surveyId": {
+            "description": "Win-loss survey id. Required only when a section reads winLossSurveyData; prepare_generate_report names the sections that need it.",
+            "type": "string",
+            "minLength": 1
+          },
+          "reportTitle": {
+            "description": "Falls back to the template name, then to \"Report - date\".",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "projectId",
+          "templateId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_report_status",
+      "title": "Check a report run",
+      "description": "How far a report got, which sections landed, and the link if it is already shared.\n\nThis does not publish anything. shareBlockedReason not_published means the report is finished and private — offer share_report and wait for a yes.\nstate completed_with_gaps means the report is real but incomplete. Name the missing sections by title — reporting success for a report missing two of six is worse than reporting nothing.\nstate stalled means nothing has completed in twice the estimate. Say so plainly and offer ONE retry; do not poll in a loop.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Id from generate_report."
+          }
+        },
+        "required": [
+          "reportId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "schedule_report",
+      "title": "Set how often a report runs",
+      "description": "Set a template’s cadence. Replaces whatever it was on.\n\nSteve schedules by FREQUENCY. The only accepted values are one-time, daily, weekly, bi-weekly, monthly, and there is no day-of-week field and no time-of-day field anywhere in the product.\nSo when the user names a day (\"every Thursday\", \"Mondays\"), a time (\"at 9am\", \"first thing\") or an interval outside the list (\"quarterly\", \"twice a week\"): do NOT translate it into the nearest value. List the five, say which is closest, say plainly what cannot be pinned, and let them choose. Then call this.\nThis matters because a user told \"scheduled for Mondays\" has been promised something no column stores — a weekly run lands whenever the orchestrator fires.\n\nReport previousSchedule when it differs: a silent swap is a change the user should hear. Report deliveryWarning when set — a schedule with no delivery configured produces reports nobody is told about.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "templateId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Id from list_report_templates. Required — the legacy template-less report shape is not exposed here."
+          },
+          "reportSchedule": {
+            "type": "string",
+            "enum": [
+              "one-time",
+              "daily",
+              "weekly",
+              "bi-weekly",
+              "monthly"
+            ],
+            "description": "One of one-time, daily, weekly, bi-weekly, monthly. Steve schedules by FREQUENCY only — there is no day-of-week and no time-of-day field anywhere. If the user names a day (\"every Thursday\"), a time (\"at 9am\") or an interval outside this list (\"quarterly\"), do NOT map it: list these five, name the nearest, say the difference, and let the user pick."
+          },
+          "notifyOnComplete": {
+            "description": "Where finished runs are announced. Leave unset to keep what the template already has.",
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "boolean"
+              },
+              "slack": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "email",
+              "slack"
+            ]
+          }
+        },
+        "required": [
+          "projectId",
+          "templateId",
+          "reportSchedule"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "share_report",
+      "title": "Publish a report to a public link",
+      "description": "Put a finished report behind a url that anyone who has it can read, with no login.\n\nThis is a publication of the user’s competitive intelligence to the open internet. Ask first, in those terms, and call it only after they say yes — never to \"get the link\" for a report they only asked about.\nRefused while the report is queued, generating or failed: there would be nothing worth reading behind the url.\nA report with gaps CAN be published, because a report missing two of six sections is still a real report — but name the missing sections before you offer it, not after.\nwasPublic true means it was already shared and this call changed nothing. Say that rather than announcing it as newly published.\nReversible with unshare_report, which kills the url immediately.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "reportId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "unshare_report",
+      "title": "Take a report’s public link down",
+      "description": "Turn off the public link for a report. The url stops working immediately; the report itself is untouched.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "reportId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "list_canvas_templates",
+      "title": "List canvas templates",
+      "description": "Canvas templates in a project. Only needed when the user wants a canvas built to a specific template — generate_canvas uses the default section set otherwise.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "limit": {
+            "description": "How many rows to return. Defaults to 20, clamped to 100.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cursor": {
+            "description": "nextCursor from the previous page of this same tool.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "generate_canvas",
+      "title": "Build a competitor canvas",
+      "description": "Pull a competitor’s reviews, news, website changes and your call insights into a sourced battle-card canvas.\n\nManager-only, the same as in the app. Confirm with the user before calling — this is a five-to-fifteen minute run.\nexistingCanvasStatus completed or generating means nothing was overwritten. Offer to open the existing one with get_canvas, or ASK whether to replace it. Only set regenerate after the user says yes — there is no undo, and a hand-built canvas may be underneath.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Competitor id from list_competitors. Match the competitor the user named."
+          },
+          "templateId": {
+            "description": "Canvas template id from list_canvas_templates. Omit for the default section set.",
+            "type": "string",
+            "minLength": 1
+          },
+          "regenerate": {
+            "description": "Overwrite a canvas that is already finished or in flight. There is no undo over a text interface — ask the user before setting this, never set it to clear a conflict on your own.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "projectId",
+          "competitorId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_canvas_status",
+      "title": "Check a canvas build",
+      "description": "How far a canvas has got, and the link if it is already shared.\n\nThis does not publish anything. shareBlockedReason not_published means the canvas is finished and private — offer share_canvas and wait for a yes.\nsectionsFilled is real progress counted from the blocks written so far, not a spinner. Use it.\nstate stalled means the run outlived the generator’s handler limit and is not coming back. Offer ONE retry with regenerate; do not keep polling.\nsourcedBlockCount is worth saying out loud — a canvas whose blocks carry no sources is worth much less than one where nearly all of them do.\ncreationSource created_manually means a person built this by hand. Name that before publishing or replacing it.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Competitor id from list_competitors. Match the competitor the user named."
+          },
+          "canvasId": {
+            "description": "Id from generate_canvas. The competitor scope resolves it when omitted.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId",
+          "competitorId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_canvas",
+      "title": "Read a canvas with its sources",
+      "description": "The canvas content, with the sources kept against the individual claims they back.\n\nDo NOT flatten the sources up to the canvas — knowing which claim came from where is the entire value of this read.\nA source marked isStale is over a year old. Mark that claim as possibly out of date rather than repeating it as current; a stale claim presented as fact is exactly what this product exists to prevent.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Competitor id from list_competitors. Match the competitor the user named."
+          },
+          "sectionType": {
+            "description": "Narrow to one section type instead of the whole canvas.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectId",
+          "competitorId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "share_canvas",
+      "title": "Publish a canvas to a public link",
+      "description": "Put a finished canvas behind a url that anyone who has it can read, with no login.\n\nManager-only, and for the same reason building one is: this puts a competitor analysis assembled from the org’s own call insights on the open internet.\nAsk before calling, in those terms, and only call it once the user has said yes. Never call it to \"get the link\" for a canvas they only asked about.\nRefused while the canvas is still building or has failed — there would be nothing worth reading behind the url.\nwasPublic true means it was already shared and this call changed nothing. Say that rather than announcing it as newly published.\nReversible with unshare_canvas, which kills the url immediately.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Competitor id from list_competitors. Match the competitor the user named."
+          }
+        },
+        "required": [
+          "projectId",
+          "competitorId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "unshare_canvas",
+      "title": "Take a canvas’s public link down",
+      "description": "Turn off the public link for a canvas. The url stops working immediately; the canvas itself is untouched.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Project id from list_projects. Match the project the user named; ask which one when more than one could match."
+          },
+          "competitorId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Competitor id from list_competitors. Match the competitor the user named."
+          }
+        },
+        "required": [
+          "projectId",
+          "competitorId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    }
+  ],
+  "resources": [],
+  "prompts": []
+}

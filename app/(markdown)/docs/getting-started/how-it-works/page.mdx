@@ -1,0 +1,63 @@
+export const metadata = {
+  title: "How Steve answers",
+  description: "Sourced answers, suggested next steps, draft then confirm then save, what empty results mean, and how long collection takes.",
+};
+
+<Meta eyebrow="Getting started" {...metadata} />
+
+Steve tells your assistant how to behave when it connects. This page explains those rules in plain words.
+
+## Answers come from collected data
+
+Your assistant must not answer about a competitor from its own memory. It calls a Steve tool. If Steve has not collected the data yet, the assistant says so.
+
+Every item has a **source link** and a **date**. Your assistant should show both. If it does not, ask: "Where is this from?"
+
+<Prompt>What is the latest news on Klue? Include the source and date for each item.</Prompt>
+
+## Suggested next steps
+
+After most answers, Steve suggests up to three next steps. They are written as questions. Your assistant asks you the first one and waits.
+
+It never runs a suggested step on its own. You stay in control.
+
+## Draft, confirm, save
+
+When something will be saved, Steve works in two steps.
+
+<Steps>
+  <Step title="Prepare">Steve reads a website or checks a request and shows a draft. Nothing is saved.</Step>
+  <Step title="Confirm">You read the draft, fix anything, and say yes.</Step>
+  <Step title="Write">Only now does the assistant save the project, competitors, tracker or report.</Step>
+</Steps>
+
+This applies to creating a project, adding competitors, tracking website pages and running a report.
+
+<Callout type="note" title="A convention, not a lock">
+  The draft step is how your assistant is told to work. Steve's server does not force it. Read what your assistant is about to save.
+</Callout>
+
+## What an empty result means
+
+An empty list is not always "nothing happened". Steve gives a reason. The usual ones:
+
+| Reason | What it means | What to do |
+|---|---|---|
+| Still collecting | Steve has not finished the first collection. | Wait and ask again. |
+| Nothing found | Steve looked and found nothing for this filter or date range. | Widen the dates or filters. |
+| Not tracked | You do not track this competitor or account yet. | Ask Steve to start tracking it. |
+| Not in your plan | Your plan does not include this source. | See [Plans and limits](/docs/account/plans-and-limits). |
+
+## Collection takes time
+
+Steve does not look at the web live. It collects on a schedule.
+
+- After you add a competitor, the first data arrives from **a few minutes to a few hours** later.
+- News usually fills first.
+- On the MCP plan, data refreshes weekly, not daily.
+- Long jobs (reports, canvases, competitor searches) run in the background. Your assistant starts them, then checks the status later.
+
+<Cards>
+  <Card title="All 47 tools" href="/docs/tools">See what each tool does.</Card>
+  <Card title="Plans and limits" href="/docs/account/plans-and-limits">What your plan includes.</Card>
+</Cards>

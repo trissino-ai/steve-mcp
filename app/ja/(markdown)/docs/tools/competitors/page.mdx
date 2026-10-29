@@ -1,0 +1,112 @@
+export const metadata = {
+  title: "競合",
+  description: "競合の一覧表示、追加、追跡を行います。LinkedIn、X、Instagram のアカウントも対象です。",
+};
+
+<Meta eyebrow="ツール" {...metadata} />
+
+これらのツールで、Steve が監視する相手を管理します。競合の Web サイトを貼り付けると、Steve が詳細を補完し、各社のニュース、レビュー、ソーシャル投稿を収集します。
+
+## こんなふうに頼んでみましょう
+
+<Prompt lang="ja">私の競合はどこ？</Prompt>
+<Prompt lang="ja">競合に klue.com と crayon.co を追加して。</Prompt>
+<Prompt lang="ja">Klue の LinkedIn の追跡を始めて：linkedin.com/company/klue</Prompt>
+<Prompt lang="ja">X で @klue をフォローして。</Prompt>
+<Prompt lang="ja">追跡しているソーシャルアカウントを教えて。</Prompt>
+
+## 流れ
+
+<Steps>
+  <Step title="下書き">競合の Web サイトを最大 10 件伝えます。アシスタントがサイトを読み取り、会社名、ひとこと説明、LinkedIn ページを埋めます。何も保存されません。</Step>
+  <Step title="一覧を確認">失敗したサイトがあっても、ほかのサイトには影響しません。不要なものは削除し、必要なら修正します。</Step>
+  <Step title="追加">確認の返事をもらってから、競合をまとめて追加します。Steve がデータの収集を始めます。</Step>
+</Steps>
+
+データはすぐには表示されません。収集には数分から数時間かかり、その後は定期的に更新されます。
+
+## 競合を一覧表示する
+
+<ToolBadge name="list_competitors" bucket="read" lang="ja" />
+
+プロジェクト内の競合と、Steve が各社について保持しているアカウント（LinkedIn、Instagram、Google 広告主、Facebook ページ）を表示します。
+
+<Facts>
+  <Fact label="指定できること">プロジェクトと、表示する件数（最大 100 件）。</Fact>
+  <Fact label="取得できる内容">名前、Web サイト、ひとこと説明、追跡中かどうか、アカウント。追跡していない競合は、何も収集されないため目印が付きます。</Fact>
+</Facts>
+
+## Web サイトから競合の下書きを作る
+
+<ToolBadge name="prepare_add_competitor" bucket="read" lang="ja" />
+
+最大 10 件の Web サイトを読み取り、各競合の下書きを作ります。何も保存しません。
+
+<Facts>
+  <Fact label="指定できること">1 件から 10 件の Web サイト。貼り付けたままの形式で構いません。</Fact>
+  <Fact label="取得できる内容">サイトごとに、準備完了または失敗、名前、ひとこと説明、LinkedIn ページ。失敗した場合はその理由。</Fact>
+</Facts>
+
+10 件で 1 分ほどかかります。プレースホルダーのサイトは失敗します。
+
+## 競合を追加する
+
+<ToolBadge name="add_competitor" bucket="write" lang="ja" />
+
+確認済みの競合を最大 10 社まで追加し、Steve アプリと同じ収集を開始します。対象は、レビュー、ニュース、企業調査、Web サイトのページ、ソーシャルアカウントです。ご利用のプランに含まれる場合は、スターターのバトルカードも作成されます。
+
+<Facts>
+  <Fact label="指定できること">競合ごとに、名前と Web サイト。任意で、ひとこと説明、本社所在地、設立、規模、売上、市場シェア、タグ、メモ、追跡するかどうか。</Fact>
+  <Fact label="追加できるアカウント">LinkedIn と Instagram（追跡を開始します）。TikTok と YouTube（保存のみで、収集はしません）。Google 広告主と Google 広告の地域（既定は米国）。Meta 広告用の Facebook ページ。</Fact>
+  <Fact label="取得できる内容">競合ごとに、追加済み、既に存在、失敗のいずれか。あわせて、補完された内容、追跡中のアカウント、調査がキューに入ったかどうかも返ります。</Fact>
+</Facts>
+
+プロジェクトに既にある Web サイトは「既に存在」として返ります。空の項目は補完されますが、収集はやり直されません。
+
+<Callout type="warning" title="競合数の上限">
+  MCP のエントリープランで追跡できる競合は 3 社、スタータープランは 5 社です。上限を超えると、Steve は追加を拒否します。トライアル終了後は、追加できません。
+</Callout>
+
+## 追跡中のソーシャルアカウントを一覧表示する
+
+<ToolBadge name="list_tracked_accounts" bucket="read" lang="ja" />
+
+プロジェクト内で Steve が取得している LinkedIn、X、Instagram のアカウントを表示します。
+
+<Facts>
+  <Fact label="指定できること">プロジェクト。任意で、プラットフォームを 1 つ。</Fact>
+  <Fact label="取得できる内容">プラットフォーム、保存されているプロフィールのアドレス、表示名、最後に取得した日時。一度も取得していない場合は空で表示されます。</Fact>
+</Facts>
+
+## LinkedIn アカウントを追跡する
+
+<ToolBadge name="set_linkedin_handle" bucket="write" lang="ja" />
+
+LinkedIn の企業ページまたは個人プロフィールの取得を開始します。
+
+## X（Twitter）アカウントを追跡する
+
+<ToolBadge name="set_x_handle" bucket="write" lang="ja" />
+
+X（旧 Twitter）プロフィールの取得を開始します。
+
+## Instagram アカウントを追跡する
+
+<ToolBadge name="set_instagram_handle" bucket="write" lang="ja" />
+
+Instagram プロフィールの取得を開始します。
+
+3 つとも使い方は同じです。
+- プロフィールの完全なアドレス、または `@acme` のようなハンドルだけを伝えます。
+- 別のプラットフォームのリンクは受け付けられません。
+- すでに追跡しているプロフィールは、そのまま変更されません。
+- アカウント、すでに追跡中だったかどうか、取得がキューに入ったかどうかが返ります。投稿は、最初の取得から数分後に表示されます。
+
+<Callout type="warning" title="アカウント数の上限">
+  組織全体で、すべてのプロジェクトを合わせた追跡可能なソーシャルアカウント数に上限があります。上限に達すると、追跡を 1 つやめるかアップグレードするまで、Steve は追加を拒否します。
+</Callout>
+
+<Cards>
+  <Card title="ニュース・レビュー・投稿" href="/ja/docs/tools/intelligence">これらのアカウントの発信を確認します。</Card>
+  <Card title="広告" href="/ja/docs/tools/ads">広告主を追加して、広告を確認します。</Card>
+</Cards>

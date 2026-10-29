@@ -1,0 +1,39 @@
+export const metadata = {
+  title: "VS Code",
+  description: "Add Steve to VS Code as an HTTP MCP server and sign in.",
+};
+
+<Meta eyebrow="Connect your assistant" {...metadata} />
+
+Steve's sign-in accepts VS Code's return address (vscode.dev), so you can connect it. You add the server from the Command Palette. No file editing is needed.
+
+<Callout type="warning" title="AI features must be on">
+  VS Code AI features must be enabled. Your organization can also limit which MCP servers are allowed. If Steve is blocked, ask your admin.
+</Callout>
+
+<Steps>
+  <Step title="Open the Command Palette">Press Ctrl+Shift+P (Windows, Linux) or Cmd+Shift+P (Mac).</Step>
+  <Step title="Run MCP: Add Server">Type **MCP: Add Server** and press Enter.</Step>
+  <Step title="Choose HTTP">Choose **HTTP (HTTP or Server-Sent Events)**. This is the choice for servers that have a web address.</Step>
+  <Step title="Enter the address">Enter `https://app.hiresteve.ai/api/agent/mcp`.</Step>
+  <Step title="Enter a server ID">Type a name such as steve.</Step>
+  <Step title="Choose where to save it">Choose **Global** to use Steve in all your projects, or the workspace option to share it with one project.</Step>
+  <Step title="Sign in">When VS Code asks, allow the sign-in. Your browser opens Steve. Sign in, pick your organization and click **Approve**.</Step>
+</Steps>
+
+{/* screenshot: VS Code MCP: Add Server → HTTP prompt */}
+
+To test, open chat in agent mode and ask:
+
+<Prompt>Use Steve to list my projects.</Prompt>
+
+Expand the tool call. If a Steve tool ran and returned results, you are connected.
+
+<Callout type="note" title="Not tested by the Steve team">
+  Steve's app has no VS Code instructions yet. If a label differs, follow VS Code's current MCP documentation.
+</Callout>
+
+<Cards>
+  <Card title="Sign-in and permissions" href="/docs/account/sign-in">What you approve.</Card>
+  <Card title="Troubleshooting" href="/docs/account/troubleshooting">Errors and fixes.</Card>
+</Cards>

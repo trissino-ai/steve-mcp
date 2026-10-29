@@ -1,0 +1,77 @@
+export const metadata = {
+  title: "Projects",
+  description: "Set up a project from your company website, then see what Steve already tracks.",
+};
+
+<Meta eyebrow="Tools" {...metadata} />
+
+A project is your company and the competitors you track. These tools create one from your website and list what you have. Steve then starts researching your market on its own.
+
+## Try asking
+
+<Prompt>What projects do I have in Steve?</Prompt>
+<Prompt>Set up Steve for acme.com.</Prompt>
+<Prompt>Create a competitive project for my company, https://www.klue.com.</Prompt>
+<Prompt>Yes, create it.</Prompt>
+
+## The flow
+
+<Steps>
+  <Step title="Draft">You give your company website. The assistant reads it and fills in a draft. Nothing is saved yet.</Step>
+  <Step title="You check the draft">The assistant shows the name, industry, target market and description. Correct anything that is wrong.</Step>
+  <Step title="Create">Once you say yes, the project is created and competitor research starts. First competitors appear in a few minutes.</Step>
+</Steps>
+
+## List projects
+
+<ToolBadge name="list_projects" bucket="read" />
+
+Shows every project in your organization. Each one comes with its industry, description and number of competitors.
+
+<Facts>
+  <Fact label="You can say">How many to show (up to 100, default 20).</Fact>
+  <Fact label="You get">Organization name, then each project with its competitor count.</Fact>
+</Facts>
+
+If you have no project yet, the assistant offers to set one up. Other tools use the project you name here.
+
+## Draft a project from a company website
+
+<ToolBadge name="prepare_create_project" bucket="read" />
+
+Reads one company website and drafts the project. It saves nothing. It takes a moment.
+
+<Facts>
+  <Fact label="You say">The company website, in any form. Optionally a hint to steer the draft.</Fact>
+  <Fact label="You get">A draft with name, industry, sub-industry, target market, description, and your company name and website.</Fact>
+</Facts>
+
+The answer is one of three:
+- **Ready**: the draft is complete.
+- **Needs input**: something is missing. The assistant asks you for it.
+- **Needs a choice**: the site has several products. You pick which one the project is about.
+
+<Callout type="note">
+  Placeholder sites like example.com are not accepted. Drafting counts toward the hourly limit for changes, even though it saves nothing. It stops working after your trial ends.
+</Callout>
+
+## Create a project
+
+<ToolBadge name="create_project" bucket="write" />
+
+Creates the project and your own company inside it. It then queues research on competitors, and on your company (reviews, news, company details, website pages).
+
+<Facts>
+  <Fact label="You say">Name, industry, sub-industries, target market, description, your company name and your real website.</Fact>
+  <Fact label="Optional">How often to refresh (bi-weekly, weekly, monthly or manual, default manual). Turn on SEO, ads, social or website tracking.</Fact>
+  <Fact label="You get">The new project and your company record. It also says whether research was queued.</Fact>
+</Facts>
+
+<Callout type="warning" title="Limits">
+  The entry MCP plan has 1 project. Past your plan's cap, Steve refuses with a limit message. Your own company is already added, so do not add it again as a competitor.
+</Callout>
+
+<Cards>
+  <Card title="Competitors" href="/docs/tools/competitors">Add the companies you compete with.</Card>
+  <Card title="Find new competitors" href="/docs/tools/discovery">Let Steve suggest competitors.</Card>
+</Cards>

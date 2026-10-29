@@ -1,0 +1,41 @@
+export const metadata = {
+  title: "ChatGPT",
+  description: "Add Steve to ChatGPT as a custom MCP server.",
+};
+
+<Meta eyebrow="Connect your assistant" {...metadata} />
+
+Steve's sign-in accepts ChatGPT's return address, so you can connect it. ChatGPT changes its menus often. These steps follow OpenAI's current guide for adding a custom MCP server.
+
+<Callout type="warning" title="Check your plan and workspace">
+  Adding a custom MCP server is controlled by your ChatGPT plan and, in a workspace, by your admin. OpenAI says account and workspace policies apply. If you cannot find the option, ask your admin. Check [OpenAI's help article on developer mode and MCP apps](https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta) for the current plan list.
+</Callout>
+
+<Steps>
+  <Step title="Open ChatGPT Plugins">Go to **chatgpt.com/plugins** in your browser.</Step>
+  <Step title="Add a custom MCP server">Click the plus button, then **Add custom MCP server**.</Step>
+  <Step title="Name it">Enter a name, for example Steve, and a short description.</Step>
+  <Step title="Paste the address">Under **Connection**, enter `https://app.hiresteve.ai/api/agent/mcp`.</Step>
+  <Step title="Choose OAuth">Under authentication, choose OAuth. Leave any client ID and secret empty. Steve registers ChatGPT by itself.</Step>
+  <Step title="Confirm and create">Read the risk warning and click **I understand and want to continue**. Then click **Create as a plugin**.</Step>
+  <Step title="Sign in to Steve">ChatGPT sends you to Steve. Sign in, pick your organization and click **Approve**.</Step>
+</Steps>
+
+{/* screenshot: ChatGPT Add custom MCP server form */}
+
+ChatGPT shows the tools it found. Start a chat, turn Steve on for that chat, and ask:
+
+<Prompt>Use Steve to list my projects.</Prompt>
+
+<Callout type="note" title="Older ChatGPT versions">
+  Earlier versions put this under **Settings → Apps / Connectors → Advanced → Developer mode**. If you do not see the Plugins page, look there.
+</Callout>
+
+<Callout type="note" title="Not tested by the Steve team">
+  Steve's app has no ChatGPT instructions yet. If a label differs from this page, follow ChatGPT's screen and use the same address.
+</Callout>
+
+<Cards>
+  <Card title="Sign-in and permissions" href="/docs/account/sign-in">What you approve.</Card>
+  <Card title="Troubleshooting" href="/docs/account/troubleshooting">Errors and fixes.</Card>
+</Cards>

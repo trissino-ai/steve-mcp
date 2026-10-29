@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "新しい競合を探す",
+  description: "まだ追跡していない競合を Steve に探してもらい、追加したい企業を選びます。",
+};
+
+<Meta eyebrow="ツール" {...metadata} />
+
+ほかにどんな会社と競合しているか、わからないときは、Steve が自社に似た企業を探します。提案を確認して、よさそうな企業を追加します。あなたが指示するまで、何も追跡されません。
+
+## こんなふうに頼んでみましょう
+
+<Prompt lang="ja">まだ追跡していない競合を探して。</Prompt>
+<Prompt lang="ja">ほかにどんな会社と競合している？</Prompt>
+<Prompt lang="ja">競合の検索は終わった？</Prompt>
+<Prompt lang="ja">検索で見つかった競合を教えて。</Prompt>
+<Prompt lang="ja">Acme は本当の競合じゃないので、除外して。</Prompt>
+
+## 流れ
+
+<Steps>
+  <Step title="検索を開始">アシスタントが現在の提案を確認し、新しい検索を始める前に確認します。</Step>
+  <Step title="待つ">通常は 5 分から 20 分かかります。アシスタントに状況の確認を頼みます。</Step>
+  <Step title="確認する">提案された企業が、それぞれの理由の要約とともに表示されます。</Step>
+  <Step title="追加または除外">必要な企業は競合として追加します。残りは除外すると、二度と提案されません。</Step>
+</Steps>
+
+<Callout type="note">
+  プロジェクトに自社が設定されている必要があります。Steve から作成したプロジェクトには、必ず設定されています。
+</Callout>
+
+## 新しい競合を検索する
+
+<ToolBadge name="discover_competitors" bucket="write" lang="ja" />
+
+自社に似ていて、まだ追跡していない企業を探す検索を、バックグラウンドで開始します。
+
+<Facts>
+  <Fact label="指定できること">プロジェクト。</Fact>
+  <Fact label="取得できる内容">検索が始まったかどうか、おおよその待ち時間、すでにある提案の件数。検索がすでに実行中の場合は、その旨が伝えられます。</Fact>
+</Facts>
+
+<Callout type="warning" title="上限">
+  検索はプロジェクトごとに 1 日 1 回です。1 つの接続では、1 時間に最大 5 回まで実行できます。トライアル終了後は、検索を開始できません。
+</Callout>
+
+## 競合の検索状況を確認する
+
+<ToolBadge name="get_discovery_status" bucket="read" lang="ja" />
+
+検索で何か見つかったかを確認します。
+
+<Facts>
+  <Fact label="取得できる内容">実行中、遅延中、完了、不明のいずれか。あわせて、新しく見つかった企業の数と、経過した分数も返ります。</Fact>
+</Facts>
+
+「不明」は、Steve が「何も見つからなかった」のか「失敗した」のかを判別できない状態です。アシスタントは両方の可能性を伝え、再実行を 1 回提案することがあります。
+
+## 見つかった競合を一覧表示する
+
+<ToolBadge name="list_discovered_competitors" bucket="read" lang="ja" />
+
+検索で提案された企業を、新しい順に表示します。あくまで提案です。
+
+<Facts>
+  <Fact label="指定できること">関連性の高いものだけを表示する（関連度のしきい値）、除外済みを含める、表示する件数。</Fact>
+  <Fact label="取得できる内容">会社名、Web サイト、短い説明、関連度スコア、提案された理由。スコアはモデル自身による順位付けで、確率ではありません。</Fact>
+  <Fact label="そのほか">すでに追跡しているため除外された件数と、最新の検索がどれくらい前のものか。</Fact>
+</Facts>
+
+## 提案された競合を除外する
+
+<ToolBadge name="dismiss_discovered_competitor" bucket="write" lang="ja" />
+
+提案を「関連なし」としてマークし、以降は提案されないようにします。何も削除されません。追跡中の競合にも影響しません。
+
+<Facts>
+  <Fact label="指定できること">除外する企業。提案の一覧にある企業である必要があります。</Fact>
+</Facts>
+
+<Cards>
+  <Card title="競合" href="/ja/docs/tools/competitors">提案された企業を競合として追加します。</Card>
+</Cards>

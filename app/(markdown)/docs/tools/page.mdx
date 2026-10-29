@@ -1,0 +1,114 @@
+export const metadata = {
+  title: "All 47 tools",
+  description: "Every tool Steve gives your AI assistant, grouped by what it helps you do.",
+};
+
+<Meta eyebrow="Tools" {...metadata} />
+
+You never call these tools yourself. You ask in plain words, and your assistant picks the right tool. This page lists all 47 so you know what is possible.
+
+- **Reads** only looks things up. Nothing changes in Steve.
+- **Changes** saves something, starts a background job, or publishes a link.
+- Tools that draft something first (their names start with `prepare_`) save nothing. They are counted as changes for rate limits only.
+
+<Callout type="note" title="Plans and limits">
+  Battle cards and website tracking are not in the entry MCP plan. After a trial ends, every tool that changes something stops working. Reads keep working. See [Plans and limits](/docs/account/plans-and-limits).
+</Callout>
+
+## Projects
+
+| Tool | What it does | Type | Plan note |
+|---|---|---|---|
+| `list_projects` | Lists your projects and how many competitors each has. | Reads | |
+| `prepare_create_project` | Reads a company website and drafts a project. Saves nothing. | Reads | |
+| `create_project` | Creates the project and starts competitor research. | Changes | Entry plan: 1 project |
+
+## Competitors and social accounts
+
+| Tool | What it does | Type | Plan note |
+|---|---|---|---|
+| `list_competitors` | Lists tracked competitors with the accounts Steve holds. | Reads | |
+| `prepare_add_competitor` | Drafts competitor details from up to 10 websites. Saves nothing. | Reads | |
+| `add_competitor` | Adds up to 10 competitors and starts collecting data. | Changes | Entry plan: 3 competitors |
+| `list_tracked_accounts` | Lists the LinkedIn, X and Instagram accounts Steve watches. | Reads | |
+| `set_linkedin_handle` | Starts tracking a LinkedIn profile. | Changes | Cap on tracked accounts |
+| `set_x_handle` | Starts tracking an X (Twitter) profile. | Changes | Cap on tracked accounts |
+| `set_instagram_handle` | Starts tracking an Instagram profile. | Changes | Cap on tracked accounts |
+
+## Find new competitors
+
+| Tool | What it does | Type | Plan note |
+|---|---|---|---|
+| `discover_competitors` | Starts a search for competitors you do not track yet. | Changes | 1 per day per project |
+| `get_discovery_status` | Checks whether the search found anything. | Reads | |
+| `list_discovered_competitors` | Lists the companies the search suggested. | Reads | |
+| `dismiss_discovered_competitor` | Hides a suggestion you do not want. | Changes | |
+
+## News, reviews and posts
+
+| Tool | What it does | Type | Plan note |
+|---|---|---|---|
+| `get_news` | News about your competitors, newest first. | Reads | |
+| `get_reviews` | Customer reviews for one competitor. | Reads | Review sources may be empty on the entry plan |
+| `get_linkedin_posts` | LinkedIn posts from tracked accounts. | Reads | |
+| `get_twitter_posts` | X (Twitter) posts from tracked accounts. | Reads | |
+| `get_instagram_posts` | Instagram posts from tracked accounts. | Reads | |
+| `get_website_changes` | Changes seen on competitor websites. | Reads | Needs page tracking |
+
+## Ads
+
+| Tool | What it does | Type | Plan note |
+|---|---|---|---|
+| `get_google_ads` | Google ads a competitor runs. | Reads | Needs the competitor's advertiser |
+| `get_meta_ads` | Facebook, Instagram, Messenger and Threads ads. | Reads | Needs the competitor's Facebook page |
+
+## Website tracking
+
+| Tool | What it does | Type | Plan note |
+|---|---|---|---|
+| `discover_website_pages` | Crawls a competitor site to learn which pages exist. | Changes | Not in entry plan |
+| `prepare_track_website_pages` | Picks pages to watch from your description. Saves nothing. | Reads | Not in entry plan |
+| `track_website_pages` | Starts watching the pages you confirmed. | Changes | Not in entry plan |
+| `list_website_tracking_requests` | Lists your website trackers. | Reads | Not in entry plan |
+| `get_website_tracking_status` | Shows what a tracker found on its latest run. | Reads | Not in entry plan |
+| `rerun_website_tracking` | Runs a tracker again now. | Changes | Not in entry plan |
+
+## Battle cards
+
+| Tool | What it does | Type | Plan note |
+|---|---|---|---|
+| `list_battle_cards` | Lists battle cards and their state. | Reads | Not in entry plan |
+| `get_battle_card` | Shows a card's saved instructions and state. | Reads | Not in entry plan |
+| `regenerate_battle_card` | Replaces the instructions and rebuilds the card. | Changes | 10 per hour |
+| `get_battle_card_status` | Checks a rebuild. | Reads | Not in entry plan |
+| `share_battle_card` | Publishes a finished card to a public link. | Changes | Not in entry plan |
+| `unshare_battle_card` | Turns the public link off. | Changes | Not in entry plan |
+
+## Reports
+
+| Tool | What it does | Type | Plan note |
+|---|---|---|---|
+| `list_report_templates` | Lists your report templates. | Reads | Templates are made in the Steve app |
+| `prepare_generate_report` | Checks what a report run would cover. Saves nothing. | Reads | |
+| `generate_report` | Starts a report run. | Changes | 5 per hour, 3 per day per template |
+| `get_report_status` | Checks a report run. | Reads | |
+| `schedule_report` | Sets how often a template runs. | Changes | |
+| `share_report` | Publishes a finished report to a public link. | Changes | |
+| `unshare_report` | Turns the public link off. | Changes | |
+
+## Canvases
+
+| Tool | What it does | Type | Plan note |
+|---|---|---|---|
+| `list_canvas_templates` | Lists canvas templates. | Reads | |
+| `generate_canvas` | Builds a sourced canvas for one competitor. | Changes | Managers only, 5 per hour |
+| `get_canvas_status` | Checks a canvas build. | Reads | |
+| `get_canvas` | Reads a canvas with the source for each claim. | Reads | |
+| `share_canvas` | Publishes a finished canvas to a public link. | Changes | Managers only |
+| `unshare_canvas` | Turns the public link off. | Changes | |
+
+<Cards>
+  <Card title="Projects" href="/docs/tools/projects">Set up Steve for your company.</Card>
+  <Card title="News, reviews and posts" href="/docs/tools/intelligence">Read what your competitors are doing.</Card>
+  <Card title="Plans and limits" href="/docs/account/plans-and-limits">What each plan includes.</Card>
+</Cards>

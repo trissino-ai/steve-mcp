@@ -1,0 +1,63 @@
+export const metadata = {
+  title: "Sharing and privacy",
+  description: "What your assistant can access, what it can change, and how public links work.",
+};
+
+<Meta eyebrow="Account and security" {...metadata} />
+
+## What your assistant can access
+
+Your assistant acts as you, in the one organization you picked. It can reach:
+
+- Projects and competitors
+- Collected public data: news, reviews, social posts, ads and website changes
+- Canvases, battle cards, reports and their templates
+
+Items from other organizations are never shown. Steve answers "not found" for them, the same as for something that does not exist.
+
+Reviews never include reviewer names. Only the reviewer's role is shown.
+
+## What it can change
+
+With your approval, your assistant can create projects, add competitors, track social accounts and website pages, run reports, canvases and competitor searches, rewrite battle card instructions, set report schedules, and publish or unpublish links.
+
+- Rewriting a battle card replaces its saved instructions. Steve returns the old text.
+- No Steve tool deletes projects or competitors.
+
+## Nothing is public unless you say so
+
+Reports, canvases and battle cards are **private by default**. Only a share step makes a public link, and your assistant must ask you first.
+
+<Steps>
+  <Step title="Ask">Your assistant asks: do you want a public link?</Step>
+  <Step title="You say yes">Only then does it publish.</Step>
+  <Step title="Anyone with the link can read it">No login is needed. The link lives on app.hiresteve.ai.</Step>
+  <Step title="Take it down any time">Ask your assistant to unshare. The link stops working at once.</Step>
+</Steps>
+
+<Prompt>Take down the public link for the Klue battle card.</Prompt>
+
+Checking a status never publishes anything. It only shows a link that already exists.
+
+<Callout type="warning" title="Canvases can include call insights">
+  A shared canvas may use insights drawn from your organization's own sales calls. Read it before you publish.
+</Callout>
+
+<Callout type="note" title="Report text may say the wrong thing">
+  The description of the report check may say a finished report gets a link anyone can open. That is wrong. A report stays private until you share it.
+</Callout>
+
+## How the connection is protected
+
+- Sign-in uses OAuth 2.1 with PKCE. Steve stores only hashed tokens.
+- Tokens work only for the Steve address. Tokens are sent in a header, never in a web address.
+- Every approval needs a signed-in person.
+- Return addresses are on an allow-list.
+- You can revoke at any time. See [Sign-in and permissions](/docs/account/sign-in).
+
+We do not publish an uptime promise or a data retention policy on this site.
+
+<Cards>
+  <Card title="Sign-in and permissions" href="/docs/account/sign-in">Approve, switch organizations, revoke.</Card>
+  <Card title="Reports" href="/docs/tools/reports">Run and share reports.</Card>
+</Cards>

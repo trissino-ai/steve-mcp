@@ -1,0 +1,45 @@
+export const metadata = {
+  title: "Claude (desktop and web)",
+  description: "Add Steve as a custom connector in the Claude desktop app or on claude.ai.",
+};
+
+<Meta eyebrow="Connect your assistant" {...metadata} />
+
+This is the way Steve recommends. You sign in once. There is no API key to create or keep safe.
+
+<Callout type="warning" title="You need a paid Claude plan">
+  Pro, Max, Team or Enterprise. Free Claude accounts cannot add connectors yet. On Team or Enterprise, an owner has to turn connectors on first.
+</Callout>
+
+<Steps>
+  <Step title="Open Connectors">In the **Claude desktop app**: **Settings → Connectors**. On **claude.ai** in a browser: **Settings → Customize → Connectors**.</Step>
+  <Step title="Add a custom connector">Click **Add custom connector**.</Step>
+  <Step title="Name it and paste the address">Use any name. Steve is fine. If you already have a connector with that name, choose another. Paste `https://app.hiresteve.ai/api/agent/mcp` as the remote MCP server. Leave **Client ID** and **Client Secret** empty. You do not need them.</Step>
+  <Step title="Accept the warning">Claude warns that this is an unverified third-party connector. That is expected for any connector Anthropic did not build.</Step>
+  <Step title="Approve in the browser">A browser window opens. Sign in to Steve if asked. It can open in a different browser than the one you are using. Pick your organization and click **Approve**.</Step>
+  <Step title="Allow the tools">Steve has 47 tools, and Claude asks permission for each one. Choose **Always allow** the first time.</Step>
+</Steps>
+
+<Screenshot src="connect-card-claude-one-click.png" alt="Steve one-click connect steps" caption="The same steps inside the Steve app: Settings → MCP → Connect with one click." />
+{/* screenshot: Claude asking permission for a Steve tool */}
+
+<Callout type="note" title="On your phone?">
+  You need your computer for this setup. Open this page there and do the steps.
+</Callout>
+
+## Check that it works
+
+Start a new chat and ask:
+
+<Prompt>Use Steve to list my projects.</Prompt>
+
+If you have no project yet, try:
+
+<Prompt>Use Steve to start tracking my competitors. My company is acme.com.</Prompt>
+
+If you hit a problem, see [Troubleshooting](/docs/account/troubleshooting).
+
+<Cards>
+  <Card title="Sign-in and permissions" href="/docs/account/sign-in">What the Approve page asks, and how to revoke.</Card>
+  <Card title="Quickstart" href="/docs/getting-started/quickstart">Your first questions.</Card>
+</Cards>

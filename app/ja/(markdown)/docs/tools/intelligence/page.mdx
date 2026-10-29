@@ -1,0 +1,91 @@
+export const metadata = {
+  title: "ニュース・レビュー・投稿",
+  description: "Steve が集めた競合のニュース、顧客レビュー、ソーシャル投稿、Web サイトの変更を読み取ります。",
+};
+
+<Meta eyebrow="ツール" {...metadata} />
+
+これらのツールは、「競合はいま何をしているか」に答えます。すべての項目に、出典のリンクと日付が付きます。読み取り専用で、Steve の内容は変わりません。
+
+## こんなふうに頼んでみましょう
+
+<Prompt lang="ja">Klue の最新ニュースを教えて。</Prompt>
+<Prompt lang="ja">G2 で Klue はお客様からどう評価されている？</Prompt>
+<Prompt lang="ja">Crayon の星 1 と星 2 のレビューを見せて。</Prompt>
+<Prompt lang="ja">Klue は最近 LinkedIn で何を投稿している？</Prompt>
+<Prompt lang="ja">Klue の料金ページは何が変わった？</Prompt>
+
+<Callout type="note" title="データはリアルタイムではなく、収集したものです">
+  Steve は定期的にデータを収集します。新しい競合は、データがそろうまで数分から数時間かかります。エントリープランの更新は週 1 回です。結果が空のときは、アシスタントが理由を伝えます。収集中、見つからなかった、追跡していない、プランに含まれていない、のいずれかです。
+</Callout>
+
+どの一覧も、新しい順に表示されます。多くの場合、期間（「8 月 3 日から」など）、競合 1 社、表示件数（最大 100 件、既定は 20 件）を指定できます。結果が多いときは、アシスタントが続きのページを取得します。
+
+## 競合のニュースを取得する
+
+<ToolBadge name="get_news" bucket="read" lang="ja" />
+
+追跡中の競合に関するニュース記事を取得します。
+
+<Facts>
+  <Fact label="指定できること">プロジェクト。競合（任意。省略すると、追跡中のすべて）。期間。トピックのタグ。</Fact>
+  <Fact label="取得できる内容">タイトル、要約、出典のリンク、日付、タグ、競合名。</Fact>
+</Facts>
+
+追跡していない競合は対象外です。
+
+## 競合のレビューを取得する
+
+<ToolBadge name="get_reviews" bucket="read" lang="ja" />
+
+競合 1 社について、G2、Capterra、Trustpilot、カスタムのソースから顧客レビューを取得します。
+
+<Facts>
+  <Fact label="指定できること">競合（必須）。星の最小評価（1 から 5）。期間。</Fact>
+  <Fact label="取得できる内容">ソース、タイトル、本文、評価、レビュー投稿者の役職、出典のリンク、日付。投稿者の名前は表示されません。</Fact>
+</Facts>
+
+何も返ってこない場合は、理由が伝えられます。Web サイトが不明、競合を追跡していない、収集中、条件で絞り込んだ結果すべてが除外された、のいずれかです。
+
+<Callout type="note" title="プラン">
+  レビューソースはプランの機能です。MCP のエントリープランには含まれないため、結果が空になる場合があります。
+</Callout>
+
+## LinkedIn の投稿を取得する
+
+<ToolBadge name="get_linkedin_posts" bucket="read" lang="ja" />
+
+## X（Twitter）の投稿を取得する
+
+<ToolBadge name="get_twitter_posts" bucket="read" lang="ja" />
+
+## Instagram の投稿を取得する
+
+<ToolBadge name="get_instagram_posts" bucket="read" lang="ja" />
+
+3 つとも使い方は同じです。Steve が取得しているアカウントの投稿を、新しい順に返します。
+
+<Facts>
+  <Fact label="指定できること">プロジェクト。競合、または追跡中のアカウント 1 つ。どちらも省略すると、そのプラットフォームのすべてが対象です。期間。</Fact>
+  <Fact label="取得できる内容">投稿の本文、リンク、日付、投稿者、いいね数、コメント数、シェア数、表示回数、メディアのリンク。Instagram の本文はキャプションです。</Fact>
+</Facts>
+
+そのプラットフォームで追跡中のアカウントがない場合は、アシスタントがアカウントの追跡開始を提案します。追加したばかりのアカウントは、最初の取得に数分かかります。詳しくは [競合](/ja/docs/tools/competitors) をご覧ください。
+
+## 競合の Web サイトの変更を取得する
+
+<ToolBadge name="get_website_changes" bucket="read" lang="ja" />
+
+Steve が競合の Web サイトで検出した、日付付きの変更を表示します。対象は、料金、メッセージ、機能ページなどです。
+
+<Facts>
+  <Fact label="指定できること">プロジェクト。競合。軽微な変更か大きな変更か。期間。</Fact>
+  <Fact label="取得できる内容">タイトル、説明、ページのリンク、種類、タグ、競合、Steve が検出した日時。</Fact>
+</Facts>
+
+日付は、Steve がページを比較して変更を見つけた日で、競合が編集した日ではありません。追跡を設定したページだけが対象です。追跡中のページがない場合は、アシスタントが開始を提案します。詳しくは [Web サイトの追跡](/ja/docs/tools/website-tracking) をご覧ください。
+
+<Cards>
+  <Card title="広告" href="/ja/docs/tools/ads">Google 広告と Meta 広告を確認します。</Card>
+  <Card title="Web サイトの追跡" href="/ja/docs/tools/website-tracking">特定のページの変更を監視します。</Card>
+</Cards>

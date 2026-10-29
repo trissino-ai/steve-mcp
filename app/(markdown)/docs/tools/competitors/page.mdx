@@ -1,0 +1,112 @@
+export const metadata = {
+  title: "Competitors",
+  description: "List, add and follow competitors, including their LinkedIn, X and Instagram accounts.",
+};
+
+<Meta eyebrow="Tools" {...metadata} />
+
+These tools manage who Steve watches. Paste competitor websites and Steve fills in the details, then collects news, reviews and social posts for each one.
+
+## Try asking
+
+<Prompt>Who are my competitors?</Prompt>
+<Prompt>Add these competitors: klue.com, crayon.co.</Prompt>
+<Prompt>Start tracking Klue on LinkedIn: linkedin.com/company/klue.</Prompt>
+<Prompt>Follow @klue on X.</Prompt>
+<Prompt>Which social accounts are you tracking for me?</Prompt>
+
+## The flow
+
+<Steps>
+  <Step title="Draft">You give up to 10 competitor websites. The assistant reads them and fills in each name, one-liner and LinkedIn page. Nothing is saved.</Step>
+  <Step title="You check the list">A site that fails does not stop the others. Remove or fix what you do not want.</Step>
+  <Step title="Add">After your yes, the competitors are added in one go. Steve starts collecting data.</Step>
+</Steps>
+
+Data does not appear at once. Collection takes minutes to hours, and refreshes on a schedule.
+
+## List competitors
+
+<ToolBadge name="list_competitors" bucket="read" />
+
+Shows the competitors in a project and the accounts Steve holds for each: LinkedIn, Instagram, Google advertiser and Facebook page.
+
+<Facts>
+  <Fact label="You say">Which project, and how many results (up to 100).</Fact>
+  <Fact label="You get">Name, website, one-liner, whether it is tracked, and its accounts. Untracked competitors are flagged because they collect nothing.</Fact>
+</Facts>
+
+## Draft competitors from their websites
+
+<ToolBadge name="prepare_add_competitor" bucket="read" />
+
+Reads up to 10 websites and drafts each competitor. It saves nothing.
+
+<Facts>
+  <Fact label="You say">1 to 10 websites, as you would paste them.</Fact>
+  <Fact label="You get">Per site: prepared or failed, name, one-liner, LinkedIn page, and the reason if it failed.</Fact>
+</Facts>
+
+Ten sites take about a minute. Placeholder sites fail.
+
+## Add competitors
+
+<ToolBadge name="add_competitor" bucket="write" />
+
+Adds up to 10 confirmed competitors and starts the same collection as the Steve app: reviews, news, company research, website pages, social accounts, and starter battle cards where your plan has them.
+
+<Facts>
+  <Fact label="You say">For each competitor, a name and website. Optional: one-liner, headquarters, founded, size, revenue, market share, a tag, notes, and whether to track it.</Fact>
+  <Fact label="Accounts you can add">LinkedIn and Instagram (tracking starts). TikTok and YouTube (saved only, nothing is collected). Google advertiser and Google ads region (default US). Facebook page for Meta ads.</Fact>
+  <Fact label="You get">For each: added, already existing, or failed. Plus what was filled in, which accounts are tracked, and whether research was queued.</Fact>
+</Facts>
+
+A website already in the project comes back as existing. Empty fields are filled, but collection does not restart.
+
+<Callout type="warning" title="Competitor cap">
+  The entry MCP plan tracks 3 competitors. Starter plans track 5. Over the cap, Steve refuses. After a trial ends, adding is blocked.
+</Callout>
+
+## List tracked social accounts
+
+<ToolBadge name="list_tracked_accounts" bucket="read" />
+
+Shows the LinkedIn, X and Instagram accounts Steve scrapes in a project.
+
+<Facts>
+  <Fact label="You say">Which project. Optionally one platform.</Fact>
+  <Fact label="You get">Platform, profile address as stored, display name, and when it was last scraped. Never scraped is shown as empty.</Fact>
+</Facts>
+
+## Track a LinkedIn account
+
+<ToolBadge name="set_linkedin_handle" bucket="write" />
+
+Starts scraping a LinkedIn company or person profile.
+
+## Track an X (Twitter) account
+
+<ToolBadge name="set_x_handle" bucket="write" />
+
+Starts scraping an X (formerly Twitter) profile.
+
+## Track an Instagram account
+
+<ToolBadge name="set_instagram_handle" bucket="write" />
+
+Starts scraping an Instagram profile.
+
+All three work the same way:
+- Give a full profile address or a bare handle, like `@acme`.
+- A link from another platform is refused.
+- A profile you already track is left as it is.
+- You get the account, whether it was already tracked, and whether a scrape was queued. Posts show up a few minutes after the first scrape.
+
+<Callout type="warning" title="Account cap">
+  Your organization has a maximum number of tracked social accounts across all projects. At the cap, Steve refuses until you stop tracking one or upgrade.
+</Callout>
+
+<Cards>
+  <Card title="News, reviews and posts" href="/docs/tools/intelligence">Read what these accounts publish.</Card>
+  <Card title="Ads" href="/docs/tools/ads">Add an advertiser to see their ads.</Card>
+</Cards>

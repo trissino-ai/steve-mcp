@@ -1,0 +1,59 @@
+export const metadata = {
+  title: "FAQ",
+  description: "Quick answers about Steve MCP.",
+};
+
+<Meta eyebrow="Account and security" {...metadata} />
+
+## Which assistants work?
+
+Claude (desktop and web), Claude Code, ChatGPT, Cursor and VS Code. Steve's own guides cover Claude and Claude Code. The others use their own current steps. See [Connect your assistant](/docs/connect/claude).
+
+## What is the address?
+
+`https://app.hiresteve.ai/api/agent/mcp`. It uses MCP Streamable HTTP.
+
+## Do I need an API key?
+
+No. You sign in with your Steve account. Leave any client ID and secret empty.
+
+## Is the connection read-only?
+
+No. Your assistant can read and write your organization's Steve data as you. Steve lists read and write scopes, but does not enforce them.
+
+## Can I use it if my organization is a Signals organization?
+
+No. Signals organizations cannot connect.
+
+## Why is my answer empty?
+
+Steve may still be collecting, may have found nothing, may not track that competitor, or your plan may not include the source. See [How Steve answers](/docs/getting-started/how-it-works).
+
+## How fresh is the data?
+
+Steve collects on a schedule, not live. New competitors fill in minutes to hours. On the MCP plan, data refreshes weekly.
+
+## Does Steve answer from memory?
+
+No. Your assistant is told to use Steve's collected data and to cite the source and date.
+
+## Will my assistant publish things?
+
+Not without asking. Reports, canvases and battle cards are private until you agree to a public link. You can take a link down at any time.
+
+## How do I switch organizations?
+
+Connect again and pick the other organization.
+
+## How do I disconnect?
+
+Revoke the connection in Steve. See [Sign-in and permissions](/docs/account/sign-in).
+
+## What does it cost?
+
+The MCP plan is $49 per month, with a 3-day trial. See [Plans and limits](/docs/account/plans-and-limits).
+
+<Cards>
+  <Card title="Quickstart" href="/docs/getting-started/quickstart">Connect and ask your first question.</Card>
+  <Card title="Troubleshooting" href="/docs/account/troubleshooting">Error codes and fixes.</Card>
+</Cards>

@@ -1,0 +1,76 @@
+export const metadata = {
+  title: "Sign-in and permissions",
+  description: "What the Approve page shows, how organizations work, how long sign-in lasts, and how to revoke a connection.",
+};
+
+<Meta eyebrow="Account and security" {...metadata} />
+
+You sign in once, in the browser. Your assistant never sees your password.
+
+## The Approve page
+
+When you add Steve, your assistant opens a Steve page titled **Approve this connection**.
+
+<Steps>
+  <Step title="Sign in">If you are signed out, you see **Sign in to continue**. Sign in to Steve. You return to the same page.</Step>
+  <Step title="Check the application">The page shows which application asks to use Steve, and where Steve will send you after you approve.</Step>
+  <Step title="Pick an organization">Under **Select organization**, choose the one to connect. The page says **Connecting as** and the organization name.</Step>
+  <Step title="Approve or deny">Click **Approve**, or **Deny** to cancel. After Approve, you can close the tab.</Step>
+</Steps>
+
+<Screenshot src="oauth-consent-approve.png" alt="The Approve this connection page" caption="The Approve page. Check the application and the organization, then click Approve." />
+
+{/* screenshot: the organization picker open (oauth-consent-org-picker.png, pending) */}
+
+<Callout type="warning" title="Approve only what you started">
+  The application name and logo are set by whoever registered the application. Steve cannot check them. Approve only if you started this connection yourself.
+</Callout>
+
+## What you are allowing
+
+The page says: the application can **read and write this organization's Steve data as you, until you revoke it**.
+
+- It acts as you. It can do what you can do in that organization.
+- Steve lists two scopes, `steve:read` and `steve:write`. Steve does not enforce them. **Do not rely on a read-only connection.**
+- Generating and sharing canvases is only for organization managers, the same as in the Steve app.
+- No Steve tool deletes projects or competitors.
+
+## One person, one organization
+
+A connection is one person in one organization. You choose the organization at approval. It is fixed after that.
+
+- To use another organization, connect again and pick the other one.
+- If you are not in any organization, the page tells you to create or join one first.
+- Any signed-in member can approve a connection.
+- If you leave the organization, the connection stops working.
+- Organizations of the Signals type cannot connect.
+- Projects are not part of the connection. Your assistant picks the project in each request.
+
+## How long sign-in lasts
+
+| What | How long | In plain words |
+|---|---|---|
+| Access | 1 hour | Your assistant renews it by itself. |
+| Renewal | 60 days | Each renewal gives a new one. If you do not use Steve for 60 days, connect again. |
+
+- If an old renewal key is used a second time, Steve cancels the whole connection to keep you safe. Connect again.
+- When Steve renews, it checks you are still in the organization.
+
+## Revoke a connection
+
+Revoke in Steve. Do this even if you also remove the connector in your assistant.
+
+<Steps>
+  <Step title="Open the Approve page">Add Steve again in your assistant, or open the Steve sign-in page from it. The page lists **Existing connections**.</Step>
+  <Step title="Find the connection">Each row shows when it was connected and when it was last used.</Step>
+  <Step title="Click Revoke">The connection stops working right away. You only see and revoke connections you made yourself in that organization.</Step>
+</Steps>
+
+<Callout type="note" title="Removing it in your assistant">
+  We have not confirmed that removing the connector in Claude, ChatGPT, Cursor or VS Code also revokes it in Steve. Revoke in Steve to be sure.
+</Callout>
+
+<Cards>
+  <Card title="Sharing and privacy" href="/docs/account/sharing-and-privacy">What can be published, and what stays private.</Card>
+  <Card title="Troubleshooting" href="/docs/account/troubleshooting">Sign-in errors and fixes.</Card>
+</Cards>

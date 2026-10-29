@@ -1,0 +1,39 @@
+export const metadata = {
+  title: "VS Code",
+  description: "VS Code に HTTP の MCP サーバーとして Steve を追加し、サインインします。",
+};
+
+<Meta eyebrow="アシスタントを接続" {...metadata} />
+
+Steve のサインインは VS Code の戻り先アドレス（vscode.dev）に対応しているため、接続できます。サーバーはコマンドパレットから追加します。ファイルの編集は不要です。メニュー名は英語表示のまま記載しています。
+
+<Callout type="warning" title="AI 機能を有効にしてください">
+  VS Code の AI 機能が有効になっている必要があります。組織によっては、使える MCP サーバーが制限されている場合もあります。Steve がブロックされるときは、管理者に確認してください。
+</Callout>
+
+<Steps>
+  <Step title="コマンドパレットを開く">Ctrl+Shift+P（Windows、Linux）または Cmd+Shift+P（Mac）を押します。</Step>
+  <Step title="MCP: Add Server を実行する">**MCP: Add Server** と入力し、Enter キーを押します。</Step>
+  <Step title="HTTP を選ぶ">**HTTP (HTTP or Server-Sent Events)** を選びます。Web アドレスを持つサーバーには、この選択肢を使います。</Step>
+  <Step title="アドレスを入力する">`https://app.hiresteve.ai/api/agent/mcp` を入力します。</Step>
+  <Step title="サーバー ID を入力する">steve などの名前を入力します。</Step>
+  <Step title="保存先を選ぶ">すべてのプロジェクトで Steve を使うなら **Global** を選びます。1 つのプロジェクトで共有するなら、ワークスペースの選択肢を選びます。</Step>
+  <Step title="サインインする">VS Code から確認が表示されたら、サインインを許可します。ブラウザで Steve が開きます。サインインし、組織を選んで **承認する** をクリックします。</Step>
+</Steps>
+
+{/* screenshot: VS Code MCP: Add Server → HTTP prompt */}
+
+テストするには、チャットをエージェントモードで開き、次のように聞きます。
+
+<Prompt lang="ja">Steve を使って、私のプロジェクトを一覧表示してください。</Prompt>
+
+ツール呼び出しを展開します。Steve のツールが実行されて結果が返っていれば、接続できています。
+
+<Callout type="note" title="Steve チームでは未検証です">
+  Steve のアプリには、まだ VS Code 向けの案内がありません。表示が異なる場合は、VS Code の最新の MCP ドキュメントに従ってください。
+</Callout>
+
+<Cards>
+  <Card title="サインインと権限" href="/ja/docs/account/sign-in">承認する内容。</Card>
+  <Card title="トラブルシューティング" href="/ja/docs/account/troubleshooting">エラーと対処法。</Card>
+</Cards>

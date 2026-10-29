@@ -1,0 +1,99 @@
+export const metadata = {
+  title: "Battle cards",
+  description: "Review battle cards, rewrite them with new instructions, and share a finished one.",
+};
+
+<Meta eyebrow="Tools" {...metadata} />
+
+Battle cards help sales teams win against one competitor. Steve builds them. These tools let you see them, rewrite them to your instructions, and share them. Cards are private until you ask to share.
+
+<Callout type="warning" title="Not in the entry MCP plan">
+  All six tools here need the Battle cards feature. On a plan without it, they refuse and the assistant names the plan to upgrade to. Starter plans and the managed plans include it.
+</Callout>
+
+## Try asking
+
+<Prompt>Show me my battle cards.</Prompt>
+<Prompt>How is my Klue battle card set up?</Prompt>
+<Prompt>Rewrite the Klue battle card to focus on enterprise objections.</Prompt>
+<Prompt>Is the battle card done yet?</Prompt>
+<Prompt>Yes, publish the Klue battle card.</Prompt>
+
+## The flow
+
+<Steps>
+  <Step title="Look">List your cards, then read the one you want to change. You see its saved instructions.</Step>
+  <Step title="You agree">Rewriting replaces the saved instructions. The assistant reads the old ones back and asks for a clear yes.</Step>
+  <Step title="Rewrite">Steve builds a new version. It takes a few minutes.</Step>
+  <Step title="Check status">Ask if it is done. Use the new version when checking.</Step>
+  <Step title="Share, only if you ask">The card stays private. Ask for a public link when you want one.</Step>
+</Steps>
+
+## List battle cards
+
+<ToolBadge name="list_battle_cards" bucket="read" />
+
+Lists the newest version of each card. A competitor can have several cards.
+
+<Facts>
+  <Fact label="You can say">Which project. A competitor (optional). How many.</Fact>
+  <Fact label="You get">Card name, competitor, type, state, whether it has manual edits, when it was last generated, and whether it is shared.</Fact>
+</Facts>
+
+## Read a battle card
+
+<ToolBadge name="get_battle_card" bucket="read" />
+
+Shows what a rewrite would replace: the saved instructions and the card's state.
+
+<Facts>
+  <Fact label="You get">Name, competitor, type, saved instructions (empty means nothing to lose), state, manual edits, pending changes, last generated, shared or not.</Fact>
+</Facts>
+
+States include generating, needs data, draft, pending approval, rejected, completed and failed.
+
+## Rewrite a battle card
+
+<ToolBadge name="regenerate_battle_card" bucket="write" />
+
+Replaces the card's saved instructions with your new ones and builds a new version.
+
+<Facts>
+  <Fact label="You say">Which card, and the new instructions (up to 2000 characters).</Fact>
+  <Fact label="You get">Whether it started, the previous instructions (kept so you can restore them), and pending changes.</Fact>
+</Facts>
+
+<Callout type="warning" title="Read before you rewrite">
+  The new instructions are used for every future rewrite of this card. If the card has manual edits, the new copy waits for approval and the public link keeps showing the old version. Limit: 10 per hour.
+</Callout>
+
+## Check a battle card rewrite
+
+<ToolBadge name="get_battle_card_status" bucket="read" />
+
+Shows how far a rewrite got. It never publishes. If the card is already shared, you get the link.
+
+<Facts>
+  <Fact label="You get">State, timing, pending changes, failure reason, and the public link if shared.</Fact>
+</Facts>
+
+"Pending approval" is not a failure. "Needs data" means Steve needs more data, not another try.
+
+## Publish a battle card to a public link
+
+<ToolBadge name="share_battle_card" bucket="write" />
+
+Publishes a finished card. Anyone with the link can read it, with no login. The assistant asks first.
+
+Steve refuses, and publishes nothing, if the card is still generating, needs data, is a draft, is pending approval, was rejected or failed. You get the link back, and whether it was already public.
+
+## Take a battle card's public link down
+
+<ToolBadge name="unshare_battle_card" bucket="write" />
+
+Turns the public link off at once. The card itself is untouched.
+
+<Cards>
+  <Card title="Sharing and privacy" href="/docs/account/sharing-and-privacy">What a public link means.</Card>
+  <Card title="Reports" href="/docs/tools/reports">Generate and share reports.</Card>
+</Cards>
